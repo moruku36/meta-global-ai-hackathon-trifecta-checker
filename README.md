@@ -6,6 +6,8 @@ and how to split it up if it is not.
 
 Built for the Meta Global AI Developer Hackathon (Oct–Nov 2026).
 
+**Live demo:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
+
 ## The idea: the lethal trifecta
 
 An agent becomes dangerous when three powers meet in one place:
