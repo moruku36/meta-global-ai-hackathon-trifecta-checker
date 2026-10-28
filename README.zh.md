@@ -54,7 +54,7 @@ Trifecta Checker 会给智能体画像打分：
 | **Risky** | 有两个要素，或有一个要素外加一个风险放大器 |
 | **Low** | 只有一个或零个要素，且没有放大器 |
 
-放大器：**无人审批就行动**、**自动执行代码**和
+放大器：**无人审批就行动****、自动执行代码**和
 **写入长期记忆**。
 
 ## 工作原理
@@ -89,7 +89,7 @@ description ──▶ extraction ──▶ rule engine ──▶ explanation
 ```bash
 # The engine alone — no API key needed
 python3 trifecta_checker.py
-python3 test_engine.py   # reproducibility + boundary tests (8 cases, no LLM)
+python3 tests/test_engine.py   # reproducibility + boundary tests (8 cases, no LLM)
 
 # Full pipeline (needs access to the Meta Model API)
 python3 extract.py --file fixtures/case_c.txt     # description -> verdict

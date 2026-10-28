@@ -89,7 +89,7 @@ Lethal se convierte en dos mitades más seguras.
 ```bash
 # The engine alone — no API key needed
 python3 trifecta_checker.py
-python3 test_engine.py   # reproducibility + boundary tests (8 cases, no LLM)
+python3 tests/test_engine.py   # reproducibility + boundary tests (8 cases, no LLM)
 
 # Full pipeline (needs access to the Meta Model API)
 python3 extract.py --file fixtures/case_c.txt     # description -> verdict
