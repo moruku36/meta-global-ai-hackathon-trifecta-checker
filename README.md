@@ -78,6 +78,15 @@ description ──▶ extraction ──▶ rule engine ──▶ explanation
   reported back, and the UI asks about the one that could change the
   verdict.
 
+This split follows the same pattern Meta's hackathon workshop
+"Agents 102: Best Practices for Verifiable Agents Pt. 2" (Yash Khare,
+Meta partner engineer) teaches for verifiable agents: verification
+built into the tool rather than offered as an optional step,
+deterministic checks first with the LLM judging only where judgment
+is needed, and human approval as a mandatory gate. The workshop's
+own demo memo failed verification — the kind of mistake this split
+exists to catch early.
+
 Every verdict ships with its evidence (which capability produced which
 element) and a **separation proposal**: split into a read-only Reader and a
 Sender that only sends human-approved text to an allowlist. The samples

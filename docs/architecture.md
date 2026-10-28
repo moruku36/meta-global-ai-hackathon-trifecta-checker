@@ -169,3 +169,34 @@ current profile/verdict in page state and re-sends it with each call.
   follow-ups.
 - **Demo (25%)**: 3-minute arc — Lethal email agent → ask-back → split
   into Risky + Low → voice + Japanese UI.
+
+## 9. Design grounding
+
+The pattern above — deterministic checks own the decision, an LLM only
+where judgment is needed, human approval as a gate — follows the same
+pattern Meta's own hackathon workshop taught for agent design:
+"Agents 102: Best Practices for Verifiable Agents Pt. 2" (Meta Global
+AI Developer Hackathon live session; Yash Khare, Meta partner
+engineer).
+
+Three alignments:
+
+- **Verification is built in, not optional.** The workshop's rule:
+  verification lives inside the tool, never as a separate step the
+  agent can skip. Here, the verdict is computed by
+  `trifecta_checker.py` on every check — no LLM path can bypass or
+  override it.
+- **Deterministic first, LLM-as-judge second.** In the workshop,
+  completeness and format checks are plain code; the LLM judges only
+  whether a claim is actually supported. Here, the rule engine owns
+  the verdict; Muse Spark only extracts the profile and explains the
+  result in plain language.
+- **Human approval is a gate.** The workshop ends in a human sign-off
+  even after every check passes. Here, acting with no human approval
+  (`no_human_approval`) is a risk amplifier in the rating itself.
+
+The workshop's demo is also a cautionary example: the memo built in
+the previous session failed verification — unsupported claims and a
+broken rule. Unverified agent output ships mistakes. Trifecta Checker
+applies the same lesson one step earlier: check the configuration
+before the agent runs, not only the output afterwards.
