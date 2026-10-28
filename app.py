@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Trifecta Checker — minimal web UI (stdlib only, no dependencies).
 
-Run:  python3 app.py [port]        (default 8765)
-Open: http://127.0.0.1:8765/
+Run:  python3 app.py [port]        (default: $PORT or 8765)
+Open: http://127.0.0.1:8765/ locally, or the Hugging Face Space URL.
 
 Two input modes:
 - Describe: free-text description -> Muse Spark extracts the profile ->
@@ -29,24 +29,39 @@ PAGE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trifecta Checker — is your AI agent safe?</title>
 <style>
- body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
- main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
- h1{font-size:26px;margin:8px 0 4px} .sub{color:#94a3b8;margin:0 0 20px}
- .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin:14px 0}
- textarea{width:100%;min-height:130px;background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:8px;padding:10px;box-sizing:border-box}
- button{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:15px;cursor:pointer}
- button.sub2{background:#334155} button:disabled{opacity:.5}
- select{background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:6px}
+ /* Mobile-first: designed for iPhone, widened for PC. */
+ *{box-sizing:border-box}
+ body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0;font-size:16px;line-height:1.55}
+ main{max-width:860px;margin:0 auto;padding:16px 12px 56px}
+ h1{font-size:24px;margin:6px 0 4px} .sub{color:#94a3b8;margin:0 0 16px;font-size:15px}
+ .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:14px;margin:12px 0}
+ textarea{width:100%;min-height:150px;background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:8px;padding:12px;font-size:16px}
+ button{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer;min-height:48px;touch-action:manipulation}
+ button.sub2{background:#334155;flex:1 1 40%;padding:10px 8px;font-size:14px;min-height:44px}
+ button:disabled{opacity:.5}
+ select{background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:10px;font-size:16px}
+ input[type=text],#pname{background:#0f172a;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:11px;font-size:16px;width:100%}
  .badge{display:inline-block;padding:4px 14px;border-radius:999px;font-weight:700;font-size:18px}
  .Lethal{background:#7f1d1d;color:#fecaca} .Risky{background:#713f12;color:#fde68a} .Low{background:#14532d;color:#bbf7d0}
  .elems{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
  .elem{border:1px solid #475569;border-radius:8px;padding:6px 10px;font-size:13px}
  .elem.on{border-color:#dc2626;background:#450a0a} .elem.off{opacity:.55}
- pre{white-space:pre-wrap;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px}
- fieldset{border:1px solid #334155;border-radius:8px;margin:10px 0}
- legend{color:#93c5fd} label{display:inline-block;margin:3px 10px 3px 0;font-size:14px}
+ pre{white-space:pre-wrap;word-break:break-word;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-size:14px;line-height:1.6}
+ fieldset{border:1px solid #334155;border-radius:8px;margin:10px 0;padding:8px 12px}
+ legend{color:#93c5fd;padding:0 4px}
+ fieldset label{display:flex;align-items:center;gap:10px;padding:9px 2px;font-size:15px;border-bottom:1px solid #263449}
+ fieldset label:last-child{border-bottom:0}
+ input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:#2563eb}
  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+ .row>*{min-width:0}
+ #go{width:100%}
  .muted{color:#94a3b8;font-size:13px}
+ @media (min-width:720px){
+  main{padding:24px 16px 64px} h1{font-size:26px}
+  .card{padding:16px} button.sub2{flex:0 1 auto;padding:10px 14px}
+  fieldset label{display:inline-flex;border-bottom:0;padding:6px 8px 6px 0}
+  #go{width:auto} #pname{width:auto;flex:1}
+ }
 </style></head><body><main>
 <h1>Trifecta Checker</h1>
 <p class="sub">Three powers make an AI agent dangerous in combination: reading <b>private data</b>,
@@ -190,9 +205,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> int:
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
-    server = HTTPServer(("127.0.0.1", port), Handler)
-    print(f"Trifecta Checker UI on http://127.0.0.1:{port}/")
+    import os
+
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get("PORT", "8765"))
+    server = HTTPServer(("0.0.0.0", port), Handler)
+    print(f"Trifecta Checker UI on port {port}")
     server.serve_forever()
     return 0
 

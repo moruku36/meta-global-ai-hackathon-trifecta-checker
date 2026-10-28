@@ -21,15 +21,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import trifecta_checker as engine  # noqa: E402
-
-META_HELPER = "/home/hatch/workspace/custom-connectors/custom.meta-model-api/bin/meta_chat.py"
+from llm import call_spark  # noqa: E402
 
 SYSTEM = (
     "You convert a free-text description of an AI agent's configuration into a "
@@ -55,27 +52,7 @@ VOCAB = {
 
 
 def call_llm(system: str, prompt: str, model: str, max_tokens: int = 4096) -> dict:
-    cmd = [
-        sys.executable, META_HELPER,
-        "--model", model,
-        "--system", system,
-        "--prompt", prompt,
-        "--reasoning-effort", "low",
-        "--max-tokens", str(max_tokens),
-    ]
-    start = time.time()
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
-    latency = time.time() - start
-    if proc.returncode != 0:
-        raise RuntimeError(f"LLM helper failed rc={proc.returncode}: {proc.stderr.strip()[:400]}")
-    envelope = json.loads(proc.stdout)
-    if not envelope.get("ok"):
-        raise RuntimeError(f"LLM call not ok: {json.dumps(envelope)[:400]}")
-    return {
-        "content": envelope.get("content", ""),
-        "usage": envelope.get("usage", {}),
-        "latency_sec": round(latency, 1),
-    }
+    return call_spark(system, prompt, model=model, max_tokens=max_tokens)
 
 
 def parse_profile_json(content: str) -> dict:

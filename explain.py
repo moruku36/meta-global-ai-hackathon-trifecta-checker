@@ -20,12 +20,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
-import time
 from pathlib import Path
 
-META_HELPER = "/home/hatch/workspace/custom-connectors/custom.meta-model-api/bin/meta_chat.py"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from llm import call_spark  # noqa: E402
 
 SYSTEMS = {
     "en": (
@@ -59,28 +58,14 @@ SYSTEMS = {
 def explain(verdict: dict, profile: dict | None, lang: str,
             model: str = "muse-spark-1.3") -> dict:
     payload = {"profile": profile, "verdict": verdict}
-    cmd = [
-        sys.executable, META_HELPER,
-        "--model", model,
-        "--system", SYSTEMS[lang],
-        "--prompt", json.dumps(payload, ensure_ascii=False, indent=2),
-        "--reasoning-effort", "low",
-        "--max-tokens", "3000",
-    ]
-    start = time.time()
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
-    latency = round(time.time() - start, 1)
-    if proc.returncode != 0:
-        raise RuntimeError(f"LLM helper failed rc={proc.returncode}: {proc.stderr.strip()[:400]}")
-    envelope = json.loads(proc.stdout)
-    if not envelope.get("ok"):
-        raise RuntimeError(f"LLM call not ok: {json.dumps(envelope)[:400]}")
+    result = call_spark(SYSTEMS[lang], json.dumps(payload, ensure_ascii=False, indent=2),
+                        model=model, max_tokens=3000)
     return {
         "lang": lang,
-        "explanation": envelope.get("content", ""),
+        "explanation": result["content"],
         "model": model,
-        "latency_sec": latency,
-        "total_tokens": envelope.get("usage", {}).get("total_tokens", 0),
+        "latency_sec": result["latency_sec"],
+        "total_tokens": result["usage"].get("total_tokens", 0),
     }
 
 
