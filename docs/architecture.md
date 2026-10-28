@@ -112,6 +112,13 @@ current profile/verdict in page state and re-sends it with each call.
   fail visibly).
 - **Stateless hosting.** Vercel free tier, stdlib-only Python; no user
   data is stored anywhere. Descriptions go to the Meta Model API only.
+- **Public-demo API guards.** All four endpoints share `api_guard.py`:
+  hard caps on request-body size (64 KB) and per-field text length,
+  enforced before any LLM call, plus a best-effort per-IP rate limit
+  (in-process counter — stateless instances mean it blunts naive loops
+  rather than guaranteeing a global limit; a hard limit would need a
+  shared store such as Vercel KV). Added 2026-10-28 before opening the
+  demo to public UAT.
 - **Free-credit caveat.** While partner free credits are in use, submitted
   content may be used for product improvement — the UI's audience is
   expected to test with sample descriptions, and this is noted for UAT.

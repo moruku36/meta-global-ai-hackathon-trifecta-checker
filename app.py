@@ -23,6 +23,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from api_guard import (MAX_MESSAGE_CHARS, check_body_size, check_payload,  # noqa: E402
+                       check_rate, check_text)
 from check import explain_result, extract_and_judge, followup, judge_profile  # noqa: E402
 
 BASE = Path(__file__).resolve().parent
@@ -695,17 +697,25 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             length = int(self.headers.get("Content-Length", "0"))
+            check_body_size(length)
+            check_rate(self.headers)
             payload = json.loads(self.rfile.read(length) or b"{}")
             lang = payload.get("lang", "en")
             if self.path == "/api/check":
-                result = extract_and_judge(str(payload.get("text", "")))
+                result = extract_and_judge(check_text(str(payload.get("text", ""))))
             elif self.path == "/api/check-profile":
+                check_payload(payload.get("profile"))
                 result = judge_profile(payload.get("profile", {}))
             elif self.path == "/api/explain":
+                check_payload(payload.get("verdict"))
+                check_payload(payload.get("profile"))
                 result = explain_result(payload.get("verdict", {}),
                                         payload.get("profile"), lang=lang)
             elif self.path == "/api/followup":
-                result = followup(str(payload.get("message", "")),
+                check_payload(payload.get("profile"))
+                check_payload(payload.get("verdict"))
+                result = followup(check_text(str(payload.get("message", "")),
+                                             MAX_MESSAGE_CHARS),
                                   payload.get("profile"), payload.get("verdict"),
                                   lang=lang)
             else:
