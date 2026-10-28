@@ -123,6 +123,13 @@ STRINGS = {
         "hi": "यह रेटिंग एक सरल सुरक्षा अनुमान है, प्रमाणपत्र नहीं। इसका ध्यान डेटा चोरी पर है: जो एजेंट निजी डेटा पढ़ सके, दूसरों की सामग्री निगल सके और बाहर भेज सके, उसे बहकाकर पढ़ा हुआ डेटा लीक कराया जा सकता है।",
         "es": "La calificación es una heurística de seguridad sencilla, no una certificación. Se centra en el robo de datos: un agente que puede leer datos privados, tragarse el contenido de otros y enviar datos fuera puede ser engañado para filtrar lo que leyó.",
     },
+    "privacy_note": {
+        "en": "Demo note: this demo runs on partner credits, so what you type may be used to improve the service. Please try it with sample descriptions, not real private data.",
+        "ja": "デモ版の注意：このデモはパートナーのクレジットで動いているため、入力した内容がサービス改善に使われることがあります。実データではなく、サンプルの説明で試してね。",
+        "zh": "演示提示：本演示使用合作伙伴额度，你输入的内容可能会被用于改进服务。请使用示例说明，不要输入真实的私人数据。",
+        "hi": "डेमो नोट: यह डेमो पार्टनर क्रेडिट पर चलता है, इसलिए तुम जो लिखोगे वह सेवा सुधारने में इस्तेमाल हो सकता है। असली निजी डेटा नहीं, नमूना विवरण इस्तेमाल करो।",
+        "es": "Nota de la demo: esta demo funciona con créditos de socio, así que lo que escribas puede usarse para mejorar el servicio. Usa descripciones de ejemplo, no datos privados reales.",
+    },
     "exp_loading": {
         "en": "Putting it into plain words…",
         "ja": "分かりやすい言葉にしてみるね…",
@@ -327,6 +334,7 @@ PAGE = """<!DOCTYPE html>
 </div>
 
 <p class="muted" data-i18n="footer"></p>
+<p class="muted" data-i18n="privacy_note"></p>
 </main><script>
 const DATA = __DATA__;
 const MASCOT = "__MASCOT__";
@@ -622,6 +630,26 @@ document.getElementById("desc").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendText(); }
 });
 document.getElementById("desc").addEventListener("input", autogrow);
+function describeUpload(text, name){
+  try{
+    const obj = JSON.parse(text);
+    if (obj && typeof obj === "object"){
+      const servers = obj.mcpServers || obj.mcp_servers || obj.servers;
+      if (servers && typeof servers === "object"){
+        const lines = ["Agent configuration file (" + name + ") using these MCP servers:"];
+        for (const [sname, cfg] of Object.entries(servers)){
+          const parts = [];
+          if (cfg && cfg.command) parts.push("runs: " + cfg.command + (Array.isArray(cfg.args) ? " " + cfg.args.join(" ") : ""));
+          if (cfg && cfg.url) parts.push("connects to: " + cfg.url);
+          lines.push("- " + sname + (parts.length ? ": " + parts.join("; ") : ""));
+        }
+        return lines.join("\\n");
+      }
+      return "Agent configuration file (" + name + "):\\n" + JSON.stringify(obj).slice(0, 3000);
+    }
+  }catch(_){}
+  return text;
+}
 document.getElementById("filein").addEventListener("change", async (e) => {
   const f = e.target.files[0]; e.target.value = "";
   if (!f) return;
@@ -629,7 +657,7 @@ document.getElementById("filein").addEventListener("change", async (e) => {
     if (f.size > 200000) throw new Error("too big");
     const text = await f.text();
     const box = document.getElementById("desc");
-    box.value = (box.value ? box.value + "\\n" : "") + text.trim();
+    box.value = (box.value ? box.value + "\\n" : "") + describeUpload(text, f.name).trim();
     autogrow(); box.focus();
   }catch(_){ addBot(esc(t("attach_error"))); }
 });
