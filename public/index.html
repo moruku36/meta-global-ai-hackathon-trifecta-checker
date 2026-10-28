@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trifecta Checker — is your AI agent safe?</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
  main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
@@ -28,6 +29,10 @@
  details.card summary{cursor:pointer;font-size:17px;font-weight:600;padding:2px 0}
  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
  .chips{margin:10px 0 2px}
+ @media (min-width:720px){
+   main{max-width:920px}
+   .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
+ }
 </style></head><body><main>
 <h1>Trifecta Checker</h1>
 <p class="lead">An AI agent gets dangerous when three powers combine: it can read
@@ -36,12 +41,13 @@
 the verdict, and Muse Spark only helps read your description and explain the result.</p>
 
 <div class="card">
- <div><b>Describe your agent</b> <span class="muted">— in your own words: what does it do?</span></div>
+ <div><b>Describe your agent</b> <span class="muted">— an agent you use, or one you are thinking of using</span></div>
+ <p class="muted" style="margin:6px 0 0">Write what it does in your own words: what it can read, what messages or pages reach it, and what it can send. Not sure how? Load a sample first and press the blue button.</p>
  <div class="chips"><button class="ghost" onclick="loadSample('case_a.txt')">Sample A · Note taker</button><button class="ghost" onclick="loadSample('case_b.txt')">Sample B · Web researcher</button><button class="ghost" onclick="loadSample('case_c.txt')">Sample C · Auto mail agent</button><button class="ghost" onclick="loadSample('case_d.txt')">Sample D · Personal assistant</button><button class="ghost" onclick="loadSample('case_c_fixed_reader.txt')">Sample C, fixed · reading only</button><button class="ghost" onclick="loadSample('case_c_fixed_sender.txt')">Sample C, fixed · sending only</button></div>
  <textarea id="desc" placeholder="e.g. My agent reads my Gmail, follows links in messages, and sends replies by itself..."></textarea>
  <div class="row">
    <label style="padding:0">Explanation language
-     <select id="lang"><option value="en">English</option><option value="ja">日本語</option></select></label>
+     <select id="lang"><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option></select></label>
    <button onclick="runText()" style="flex:1">Check this agent</button>
    <span id="busy" class="muted"></span>
  </div>
@@ -50,7 +56,7 @@ the verdict, and Muse Spark only helps read your description and explain the res
 <details class="card">
  <summary>or answer three questions instead</summary>
  <p class="muted">Tick everything your agent can do. Leave a question blank if the answer is "none of these". No AI is used for this part — the verdict comes straight from the rule engine.</p>
- <fieldset><legend>Question 1 — What private data can it read?</legend><label><input type="checkbox" data-f="data_access" value="gmail_read"> Gmail</label><label><input type="checkbox" data-f="data_access" value="email_read"> Other email</label><label><input type="checkbox" data-f="data_access" value="calendar_read"> Calendar</label><label><input type="checkbox" data-f="data_access" value="contacts_read"> Contacts</label><label><input type="checkbox" data-f="data_access" value="drive_read"> Cloud drive (Google Drive etc.)</label><label><input type="checkbox" data-f="data_access" value="local_files"> Files on the computer</label><label><input type="checkbox" data-f="data_access" value="message_read"> Chat / message history</label></fieldset><fieldset><legend>Question 2 — What can reach it from other people?</legend><label><input type="checkbox" data-f="untrusted_inputs" value="email_body"> Emails it receives</label><label><input type="checkbox" data-f="untrusted_inputs" value="web_browse"> Web pages it opens</label><label><input type="checkbox" data-f="untrusted_inputs" value="uploaded_files"> Files people upload</label><label><input type="checkbox" data-f="untrusted_inputs" value="chat_input"> Chat messages from users</label><label><input type="checkbox" data-f="untrusted_inputs" value="webhook"> Webhooks / triggers from other systems</label></fieldset><fieldset><legend>Question 3 — What can it send out or do outside?</legend><label><input type="checkbox" data-f="outbound" value="email_send"> Send email</label><label><input type="checkbox" data-f="outbound" value="chat_post"> Post messages in chat channels</label><label><input type="checkbox" data-f="outbound" value="message_send"> Send direct messages</label><label><input type="checkbox" data-f="outbound" value="http_post"> Send data to a web address</label><label><input type="checkbox" data-f="outbound" value="code_execute_outbound"> Run code that sends data out</label></fieldset><fieldset><legend>One more thing — any of these?</legend><label><input type="checkbox" data-f="amplifiers" value="no_human_approval"> It acts without asking a person first</label><label><input type="checkbox" data-f="amplifiers" value="auto_execute_code"> It runs code by itself</label><label><input type="checkbox" data-f="amplifiers" value="long_term_memory_write"> It remembers things long-term</label></fieldset>
+ <div class="qgrid"><fieldset><legend>Question 1 — What private data can it read?</legend><label><input type="checkbox" data-f="data_access" value="gmail_read"> Gmail</label><label><input type="checkbox" data-f="data_access" value="email_read"> Other email</label><label><input type="checkbox" data-f="data_access" value="calendar_read"> Calendar</label><label><input type="checkbox" data-f="data_access" value="contacts_read"> Contacts</label><label><input type="checkbox" data-f="data_access" value="drive_read"> Cloud drive (Google Drive etc.)</label><label><input type="checkbox" data-f="data_access" value="local_files"> Files on the computer</label><label><input type="checkbox" data-f="data_access" value="message_read"> Chat / message history</label></fieldset><fieldset><legend>Question 2 — What can reach it from other people?</legend><label><input type="checkbox" data-f="untrusted_inputs" value="email_body"> Emails it receives</label><label><input type="checkbox" data-f="untrusted_inputs" value="web_browse"> Web pages it opens</label><label><input type="checkbox" data-f="untrusted_inputs" value="uploaded_files"> Files people upload</label><label><input type="checkbox" data-f="untrusted_inputs" value="chat_input"> Chat messages from users</label><label><input type="checkbox" data-f="untrusted_inputs" value="webhook"> Webhooks / triggers from other systems</label></fieldset><fieldset><legend>Question 3 — What can it send out or do outside?</legend><label><input type="checkbox" data-f="outbound" value="email_send"> Send email</label><label><input type="checkbox" data-f="outbound" value="chat_post"> Post messages in chat channels</label><label><input type="checkbox" data-f="outbound" value="message_send"> Send direct messages</label><label><input type="checkbox" data-f="outbound" value="http_post"> Send data to a web address</label><label><input type="checkbox" data-f="outbound" value="code_execute_outbound"> Run code that sends data out</label></fieldset><fieldset><legend>One more thing — any of these?</legend><label><input type="checkbox" data-f="amplifiers" value="no_human_approval"> It acts without asking a person first</label><label><input type="checkbox" data-f="amplifiers" value="auto_execute_code"> It runs code by itself</label><label><input type="checkbox" data-f="amplifiers" value="long_term_memory_write"> It remembers things long-term</label></fieldset></div>
  <input type="text" id="pname" placeholder="Agent name (optional)">
  <div class="row"><button onclick="runForm()" style="flex:1">Check with these answers</button></div>
 </details>

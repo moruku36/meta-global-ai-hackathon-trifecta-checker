@@ -69,6 +69,7 @@ PAGE = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trifecta Checker — is your AI agent safe?</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
  main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
@@ -95,6 +96,10 @@ PAGE = """<!DOCTYPE html>
  details.card summary{cursor:pointer;font-size:17px;font-weight:600;padding:2px 0}
  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
  .chips{margin:10px 0 2px}
+ @media (min-width:720px){
+   main{max-width:920px}
+   .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
+ }
 </style></head><body><main>
 <h1>Trifecta Checker</h1>
 <p class="lead">An AI agent gets dangerous when three powers combine: it can read
@@ -103,12 +108,13 @@ PAGE = """<!DOCTYPE html>
 the verdict, and Muse Spark only helps read your description and explain the result.</p>
 
 <div class="card">
- <div><b>Describe your agent</b> <span class="muted">— in your own words: what does it do?</span></div>
+ <div><b>Describe your agent</b> <span class="muted">— an agent you use, or one you are thinking of using</span></div>
+ <p class="muted" style="margin:6px 0 0">Write what it does in your own words: what it can read, what messages or pages reach it, and what it can send. Not sure how? Load a sample first and press the blue button.</p>
  <div class="chips">__SAMPLES__</div>
  <textarea id="desc" placeholder="e.g. My agent reads my Gmail, follows links in messages, and sends replies by itself..."></textarea>
  <div class="row">
    <label style="padding:0">Explanation language
-     <select id="lang"><option value="en">English</option><option value="ja">日本語</option></select></label>
+     <select id="lang"><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option></select></label>
    <button onclick="runText()" style="flex:1">Check this agent</button>
    <span id="busy" class="muted"></span>
  </div>
@@ -182,12 +188,13 @@ async function loadSample(fn){
 
 
 def _groups_html() -> str:
-    parts = []
+    parts = ['<div class="qgrid">']
     for field, title, items in GROUPS:
         boxes = "".join(
             f'<label><input type="checkbox" data-f="{field}" value="{token}"> {label}</label>'
             for token, label in items)
         parts.append(f"<fieldset><legend>{title}</legend>{boxes}</fieldset>")
+    parts.append("</div>")
     return "".join(parts)
 
 
@@ -219,6 +226,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             return self._send(200, page_html(), "text/html; charset=utf-8")
+        if self.path == "/favicon.svg":
+            fav = BASE / "public" / "favicon.svg"
+            if fav.is_file():
+                return self._send(200, fav.read_bytes(), "image/svg+xml")
         if self.path.startswith("/fixtures/"):
             name = Path(self.path).name
             target = BASE / "fixtures" / name

@@ -55,10 +55,60 @@ SYSTEMS = {
 }
 
 
+SYSTEMS.update({
+    "zh": (
+        "You explain the result of a deterministic security check of an AI agent "
+        "to the agent's owner. You are given a JSON profile of the agent and the "
+        "checker's verdict. Rules: use ONLY facts present in the JSON; never invent "
+        "capabilities the agent does not have; write in Simplified Chinese, in plain "
+        "language for a non-specialist; keep each paragraph to 1-3 sentences. "
+        "Structure exactly with these four headings: "
+        "1) '判定' - the rating and which of the three elements (reads private "
+        "data / reads untrusted outside content / can send data out) are present, "
+        "naming the concrete items from the JSON. 2) '可能发生的事' - ONE "
+        "concrete attack scenario that uses only the listed capabilities. "
+        "3) '如何修复' - apply the separation proposal from the JSON, plus one "
+        "specific control for each amplifier listed. 4) '总结' - one sentence. "
+        "Output the explanation text only, with the four headings."
+    ),
+    "hi": (
+        "You explain the result of a deterministic security check of an AI agent "
+        "to the agent's owner. You are given a JSON profile of the agent and the "
+        "checker's verdict. Rules: use ONLY facts present in the JSON; never invent "
+        "capabilities the agent does not have; write in Hindi (Devanagari script), "
+        "in plain language for a non-specialist; keep each paragraph to 1-3 "
+        "sentences. Structure exactly with these four headings: "
+        "1) 'निर्णय' - the rating and which of the three elements (reads private "
+        "data / reads untrusted outside content / can send data out) are present, "
+        "naming the concrete items from the JSON. 2) 'क्या हो सकता है' - ONE "
+        "concrete attack scenario that uses only the listed capabilities. "
+        "3) 'इसे कैसे ठीक करें' - apply the separation proposal from the JSON, plus "
+        "one specific control for each amplifier listed. 4) 'सारांश' - one sentence. "
+        "Output the explanation text only, with the four headings."
+    ),
+    "es": (
+        "You explain the result of a deterministic security check of an AI agent "
+        "to the agent's owner. You are given a JSON profile of the agent and the "
+        "checker's verdict. Rules: use ONLY facts present in the JSON; never invent "
+        "capabilities the agent does not have; write in Spanish, in plain "
+        "language for a non-specialist; keep each paragraph to 1-3 sentences. "
+        "Structure exactly with these four headings: "
+        "1) 'Veredicto' - the rating and which of the three elements (reads private "
+        "data / reads untrusted outside content / can send data out) are present, "
+        "naming the concrete items from the JSON. 2) 'Qué podría pasar' - ONE "
+        "concrete attack scenario that uses only the listed capabilities. "
+        "3) 'Cómo solucionarlo' - apply the separation proposal from the JSON, plus "
+        "one specific control for each amplifier listed. 4) 'Conclusión' - one "
+        "sentence. Output the explanation text only, with the four headings."
+    ),
+})
+
+
 def explain(verdict: dict, profile: dict | None, lang: str,
             model: str = "muse-spark-1.3") -> dict:
     payload = {"profile": profile, "verdict": verdict}
-    result = call_spark(SYSTEMS[lang], json.dumps(payload, ensure_ascii=False, indent=2),
+    result = call_spark(SYSTEMS.get(lang, SYSTEMS["en"]),
+                        json.dumps(payload, ensure_ascii=False, indent=2),
                         model=model, max_tokens=3000)
     return {
         "lang": lang,
@@ -72,7 +122,7 @@ def explain(verdict: dict, profile: dict | None, lang: str,
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True, help="extract.py result or engine verdict JSON")
-    ap.add_argument("--lang", choices=["ja", "en"], default="en")
+    ap.add_argument("--lang", choices=["ja", "en", "zh", "hi", "es"], default="en")
     ap.add_argument("--model", default="muse-spark-1.3")
     args = ap.parse_args()
 
