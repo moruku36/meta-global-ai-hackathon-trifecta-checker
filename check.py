@@ -14,15 +14,25 @@ from extract import extract  # noqa: E402
 from explain import explain  # noqa: E402
 
 
+def _explain_or_note(verdict: dict, profile: dict, lang: str, model: str):
+    """The verdict is the product; an explanation failure must not sink it."""
+    try:
+        exp = explain(verdict, profile, lang, model=model)
+        return exp["explanation"], exp["total_tokens"]
+    except Exception as exc:
+        return (f"(Plain-language explanation is unavailable right now: {exc})", 0)
+
+
 def check_text(text: str, lang: str = "en", model: str = "muse-spark-1.3") -> dict:
     extracted = extract(text, model=model)
-    exp = explain(extracted["verdict"], extracted["profile"], lang, model=model)
+    explanation, tokens = _explain_or_note(
+        extracted["verdict"], extracted["profile"], lang, model)
     return {
         "mode": "text",
         "profile": extracted["profile"],
         "verdict": extracted["verdict"],
-        "explanation": exp["explanation"],
-        "meta": {"extraction": extracted["extraction"], "explanation_tokens": exp["total_tokens"]},
+        "explanation": explanation,
+        "meta": {"extraction": extracted["extraction"], "explanation_tokens": tokens},
     }
 
 
@@ -36,13 +46,13 @@ def check_profile(raw_profile: dict, lang: str = "en", model: str = "muse-spark-
         "outbound": profile.outbound,
         "amplifiers": profile.amplifiers,
     }
-    exp = explain(verdict, profile_dict, lang, model=model)
+    explanation, tokens = _explain_or_note(verdict, profile_dict, lang, model)
     return {
         "mode": "form",
         "profile": profile_dict,
         "verdict": verdict,
-        "explanation": exp["explanation"],
-        "meta": {"explanation_tokens": exp["total_tokens"]},
+        "explanation": explanation,
+        "meta": {"explanation_tokens": tokens},
     }
 
 
