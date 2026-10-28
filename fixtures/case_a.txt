@@ -1,0 +1,9 @@
+Agent name: MemoSqueeze (local memo summariser)
+
+What it does:
+- Reads plain-text memo files stored in a folder on my own PC and produces a
+  short summary of each one.
+- The summaries are written back as files in the same local folder, where I
+  read them myself later.
+- It has no network access at all: it never browses the web, never reads
+  email, and cannot send anything anywhere.

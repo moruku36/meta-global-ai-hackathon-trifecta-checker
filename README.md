@@ -1,46 +1,113 @@
-# Lethal Trifecta Checker（三要素チェック）
+# Trifecta Checker
 
-**Meta Global AI Developer Hackathon**（Meta × Cerebral Valley、2026年10月26日〜11月4日 ET）への参加作品のリポジトリです。
-開発者 **moruku36**（Kentaro Mori、横浜在住のクラウド＆セキュリティアーキテクト）が、Indie トラックにソロで参加しています。テーマは **Build for Your World**。
+**A pre-flight safety check for AI agents.** Describe what your agent can do —
+Trifecta Checker tells you whether that combination of powers is safe, why,
+and how to split it up if it is not.
 
-## これは何か
+Built for the Meta Global AI Developer Hackathon (Oct–Nov 2026).
 
-動いている AI エージェントの設定を診断し、Simon Willison が提唱した **"Lethal Trifecta"（致命的な三要素）** の組み合わせが揃っていないかをチェックするツールです。
+## The idea: the lethal trifecta
 
-1. **機密データへのアクセス** — メール、ファイル、個人情報などに触れる権限
-2. **信頼できないコンテンツへの露出** — Web ページやメール本文など、プロンプトインジェクションの入り口になる入力
-3. **外部へ送信できる能力** — メール送信、SNS 投稿、外部 API への POST など、データを外に出せる出口
+An agent becomes dangerous when three powers meet in one place:
 
-この3つが1体のエージェントに揃うと、悪意のある入力ひとつで機密データが外部に漏れる経路が完成します。本ツールは、エージェントの設定（ツール一覧、MCP サーバー、権限など）を入力すると、
+1. **It reads private data** (your mail, files, calendar…)
+2. **It reads untrusted content** (message bodies, web pages, uploads — places
+   where an attacker can plant instructions)
+3. **It can send data out** (send mail, post messages, call external APIs)
 
-- 3段階の評価（Low / Risky / **Lethal**）
-- どの要素がどの設定に由来するかという根拠
-- 権限分離の提案（読み取り専用エージェントと送信エージェントの分離、人間の承認ゲートの挿入、送信先の許可リスト化など）
+With all three, a single poisoned message can talk the agent into leaking
+your data: the pattern Simon Willison named the *lethal trifecta*. Meta's
+"Agents Rule of Two" makes the same point from the platform side: hold at
+most two of the three in one session.
 
-を返します。
+Trifecta Checker rates an agent profile:
 
-## ステータス
+| Verdict | Meaning |
+|---|---|
+| **Lethal** | All three elements are present |
+| **Risky** | Two elements, or one element plus a risk amplifier |
+| **Low** | One element or fewer, no amplifiers |
 
-**制作準備中**（2026-10-27 時点）
+Amplifiers: acting with **no human approval**, **auto-executing code**, and
+**writing to long-term memory**.
 
-- 核となる判定ロジックは、LLM に依存しないルールエンジンとして設計済み（同じ設定には常に同じ判定を返す再現性を重視）
-- Meta Model API（Muse Spark）のクレジット付与を待って、設定テキストの構造化抽出と、判定理由の説明生成を接続する予定
-- 詳細な準備内容は [docs/build-prep.md](docs/build-prep.md) を参照
+## How it works
 
-## ハッカソン期間中の新規作成について
+```
+description ──▶ extraction ──▶ rule engine ──▶ explanation
+               (Muse Spark)    (deterministic)  (Muse Spark)
+```
 
-本リポジトリの内容は、すべてハッカソン期間中（2026-10-26〜）に新規に作成したものです。
-開発者の過去の関連実績として AI 開発ガバナンスの仕組み [ai-governance-control](https://github.com/moruku36/ai-governance-control) がありますが、これは「開発させる側の環境の安全性」を扱う別プロジェクトであり、本作品（「動いているエージェント構成の診断」）の土台コードとしては使用していません。
+- **The verdict never comes from an LLM.** A small deterministic rule engine
+  (`trifecta_checker.py`) applies the rating rules, so the same profile
+  always gets the same verdict. That reproducibility is the point.
+- **Muse Spark's job is translation**: turning a free-text description into
+  the engine's structured profile, and turning the verdict back into plain
+  language (English/Japanese) with one concrete attack scenario and a fix.
+- **Extraction is validated.** The engine has a closed vocabulary. If the
+  model invents a token, the output is sent back once with the allowed
+  vocabulary (a *repair call*); if it still does not fit, extraction fails
+  loudly and the UI offers a checkbox form instead of guessing.
 
-## ロードマップ
+Every verdict ships with its evidence (which capability produced which
+element) and a **separation proposal**: split into a read-only Reader and a
+Sender that only sends human-approved text to an allowlist. The samples
+include the "after" state, so you can re-run the check and watch a Lethal
+setup become two safer halves.
 
-- [x] 企画・設計（三要素チェックの判定モデル、入力形式の正規化）
-- [ ] Meta Model API の機能棚卸しと接続方式の確定
-- [ ] ルールエンジンと入力 UI の実装
-- [ ] サンプル設定4ケースでの検証
-- [ ] 3分デモ動画の作成
-- [ ] 2026-11-05 11:00 JST までに提出
+## Quickstart
 
-## ドキュメント
+```bash
+# The engine alone — no API key needed
+python3 trifecta_checker.py
 
-- [ビルド準備メモ](docs/build-prep.md) — 提出要件のチェックリスト、設計、API 棚卸し計画、スケジュール、デモ構成案
+# Full pipeline (needs access to the Meta Model API)
+python3 extract.py --file fixtures/case_c.txt     # description -> verdict
+python3 check.py   --file fixtures/case_c.txt --lang en
+
+# Web UI (stdlib only)
+python3 app.py 8765   # http://127.0.0.1:8765/
+```
+
+## Samples
+
+| Case | Setup | Expected |
+|---|---|---|
+| A `case_a.txt` | Local memo summariser, no network | Low |
+| B `case_b.txt` | Reads mail + web, cannot send | Risky |
+| C `case_c.txt` | Mail agent that sends on its own and runs scripts | Lethal |
+| D `case_d.txt` | Everyday assistant that sends chat messages | Lethal |
+| C-fixed `case_c_fixed_reader.txt` | After the split: the Reader | Risky |
+| C-fixed `case_c_fixed_sender.txt` | After the split: the approved Sender | Low |
+
+See `fixtures/fixtures.json` for the manifest.
+
+## Honest limitations
+
+- The rating is a **heuristic**, not a standard. No validated scoring formula
+  for agent configurations exists yet; the trifecta count is a necessary
+  check, not a sufficient one.
+- The trifecta pattern is mainly about **data theft**. Agents can be unsafe
+  in other ways (bad tools, weak sandboxes, over-broad approvals) that this
+  check does not cover — see the OWASP Top 10 for Agentic Applications for
+  the wider map.
+- Extraction quality depends on the description. Vague descriptions produce
+  vague profiles; the form mode exists for precise answers.
+
+## References
+
+- Simon Willison, *The lethal trifecta for AI agents* (2025-06-16) —
+  https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
+- Meta, *Agents Rule of Two* (2025-10-31) —
+  https://ai.meta.com/blog/practical-ai-agent-security/
+- OWASP, *Top 10 for Agentic Applications for 2026* —
+  https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+
+## Built with
+
+- **Muse Spark** (Meta Model API) for extraction and explanation
+- A deterministic Python rule engine (this repo, written during the event)
+- Prior work by the same author, cited as background: `ai-governance-control`
+  (governance for the *development* environment — approval gates and
+  fail-closed design). Trifecta Checker is the complementary runtime side:
+  it diagnoses an agent configuration that already exists.

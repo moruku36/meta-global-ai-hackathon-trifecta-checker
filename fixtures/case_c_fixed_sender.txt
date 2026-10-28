@@ -1,0 +1,8 @@
+Agent name: MailSender (the sending half of the split MailPilot setup)
+
+What it does:
+- Receives the exact reply text that I have reviewed and approved in the app.
+- Sends that text from my Gmail account, and only to addresses on my
+  allowlist. Nothing is sent until I press the approve button.
+- It never reads my inbox, never opens attachments, and never browses the
+  web. It cannot run scripts or commands.

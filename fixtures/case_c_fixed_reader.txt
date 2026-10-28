@@ -1,0 +1,9 @@
+Agent name: MailReader (the read-only half of the split MailPilot setup)
+
+What it does:
+- Connects to my Gmail and reads incoming mail, including attachments and the
+  full body of each message, to triage and summarise threads.
+- When a message contains a link or a question it cannot answer from the mail
+  alone, it browses the web and reads pages it finds.
+- It shows me the summaries and draft replies inside the app. It has no way to
+  send anything: sending is handled by a separate agent after I approve.

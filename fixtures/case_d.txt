@@ -1,0 +1,9 @@
+Agent name: DayMate (everyday personal assistant)
+
+What it does:
+- Reads my email and my calendar to keep track of my day.
+- Reads the full text of incoming messages so it can tell me what needs a
+  reply and what can wait.
+- When I ask it to, it sends short status messages to my team chat channel —
+  things like "running 10 minutes late" or "the meeting moved to 15:00".
+- It does not browse the web, and it never runs code.
