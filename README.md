@@ -14,7 +14,9 @@ You chat with **Trafica**, a friendly checker character — no forms, no
 security vocabulary needed:
 
 1. **Describe your agent in your own words.** Type it, tap 🎤 and talk, or
-   tap + and load a text file (an agent config works well).
+   tap + and load a file: a plain text description, or an **MCP
+   configuration JSON** — its servers are summarized into a description
+   and checked as-is (try `fixtures/sample_mcp_config.json`).
 2. **Get a verdict in plain words** — Low, Risky or Lethal — with the powers
    behind it and an everyday-language explanation of what could go wrong
    and how to fix it.
@@ -84,6 +86,7 @@ setup become two safer halves.
 ```bash
 # The engine alone — no API key needed
 python3 trifecta_checker.py
+python3 test_engine.py   # reproducibility + boundary tests (8 cases, no LLM)
 
 # Full pipeline (needs access to the Meta Model API)
 python3 extract.py --file fixtures/case_c.txt     # description -> verdict

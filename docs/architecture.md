@@ -76,8 +76,14 @@ current profile/verdict in page state and re-sends it with each call.
   via a helper subprocess (the key never appears in code or logs).
 - **`app.py` — the web client generator.** One static HTML page: chat-only
   UI with a mascot (Trafica), language picker driving the whole UI,
-  voice input (Web Speech API), text-file attachment, and the ask-back
-  logic described below.
+  voice input (Web Speech API), file attachment, and the ask-back logic
+  described below. Attaching an MCP configuration JSON (e.g. a Claude
+  Desktop / MCP client config) is summarized client-side into a plain
+  description of its servers, which then goes through the normal
+  extraction — so a real agent config can be checked as-is
+  (`fixtures/sample_mcp_config.json`). The page footer carries the
+  heuristic disclaimer and a privacy note about the demo running on
+  partner credits.
 
 ## 4. Conversation design
 
@@ -115,21 +121,29 @@ current profile/verdict in page state and re-sends it with each call.
 
 ## 6. Verification
 
-- Six fixture cases (incl. the split "after" states) with expected
-  verdicts; extraction verified 4/4 on the text fixtures plus a
-  repair-path probe.
+- **Engine reproducibility (no LLM):** `test_engine.py` judges the six
+  canonical profiles plus two boundary cases (one element + amplifier;
+  no powers), each twice — 8/8 pass, byte-identical verdicts across runs.
+- **Extraction:** verified 4/4 on the text fixtures (Low / Risky /
+  Lethal / Lethal) against the engine's expected verdicts. A repair-path
+  probe (a description that first produced an invented token) confirmed
+  the repair call normalizes it into the closed vocabulary and still
+  reaches the correct verdict; a profile that cannot be repaired fails
+  loudly by design.
+- **Open-weights path:** extraction and explanation were also run
+  end-to-end on Muse Spark Open (`meta-models/muse-spark-open-1026` via
+  Baseten) on 2026-10-27 — Case C extraction returned the correct
+  profile, and explanations generated correctly in Japanese and English.
 - Production smoke tests after each deploy: /api/check, /api/explain,
   /api/followup.
-- Project rule: personal-development verification stays within ~10 runs
-  per task (representative + boundary cases, not commercial-scale
-  regression).
 
 ## 7. Limitations and future work
 
 - Extraction quality depends on description quality; ask-back mitigates
   but does not eliminate this.
-- No direct import of real agent configs yet (MCP manifests, assistant
-  settings exports) — the natural next step.
+- Real-config import is basic: MCP configuration JSON is summarized
+  client-side (server names, commands, URLs). Other export formats
+  (assistant settings, agent framework configs) are not parsed yet.
 - No shareable verdict card / team view yet.
 - Voice input depends on browser SpeechRecognition support.
 - Languages beyond the current five are future work.

@@ -1,0 +1,1 @@
+{"mcpServers":{"fetch":{"args":["mcp-server-fetch"],"command":"uvx"},"filesystem":{"args":["-y","@modelcontextprotocol/server-filesystem","/home/user/documents"],"command":"npx"},"gmail":{"args":["-y","@example/mcp-gmail"],"command":"npx","env":{"GMAIL_TOKEN_PATH":"~/.config/gmail/token.json"}}}}
