@@ -41,8 +41,10 @@ SYSTEMS = {
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'How to fix it' - apply the separation proposal from the JSON, plus one "
         "specific control for each amplifier listed. 4) 'Bottom line' - one sentence. "
-        "5) 'Next steps' - 2-3 concrete actions the owner can take right away, in "
-        "order, one short imperative line each (e.g. 'Turn off automatic sending'). "
+        "5) 'Next steps' - offer 2-3 concrete things the owner could try, as "
+        "gentle suggestions, not orders (phrase them like 'you could …'), then "
+        "finish with ONE friendly question inviting them to pick one or ask "
+        "about something else (e.g. 'Which would you like to try first?'). "
         "Output the explanation text only, with the five headings."
     ),
     "ja": (
@@ -56,8 +58,9 @@ SYSTEMS = {
         "2)「起こりうること」— 列挙された能力だけで成立する、具体的な攻撃シナリオを1つ。"
         "3)「直し方」— JSONの分離提案をこのエージェント向けに具体化し、増幅要因があれば1つずつ対処を書く。"
         "4)「まとめ」— 1文。"
-        "5)「次にやること」— 持ち主が今すぐできる具体的な行動を、順番に2〜3個、各1行の短い命令形で"
-        "（例：「自動送信をオフにする」）。説明文だけを出力すること。"
+        "5)「次にやること」— 命令形は使わず、「〜してみるのがおすすめだよ」のような提案の形で、"
+        "今すぐできる具体的なことを2〜3個。そして最後に「どれから試してみる？」のような、"
+        "相手が返事をしたくなる質問を1つ付けて締めること。説明文だけを出力すること。"
     ),
 }
 
@@ -78,8 +81,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) '如何修复' - apply the separation proposal from the JSON, plus one "
         "specific control for each amplifier listed. 4) '总结' - one sentence. "
-        "5) '下一步' - 2-3 concrete actions the owner can take right away, in "
-        "order, one short imperative line each. "
+        "5) '下一步' - offer 2-3 concrete things the owner could try, as gentle "
+        "suggestions, not orders, then finish with ONE friendly question "
+        "inviting them to pick one or ask something else. "
         "Output the explanation text only, with the five headings."
     ),
     "hi": (
@@ -97,8 +101,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'इसे कैसे ठीक करें' - apply the separation proposal from the JSON, plus "
         "one specific control for each amplifier listed. 4) 'सारांश' - one sentence. "
-        "5) 'अगले कदम' - 2-3 concrete actions the owner can take right away, in "
-        "order, one short imperative line each. "
+        "5) 'अगले कदम' - offer 2-3 concrete things the owner could try, as gentle "
+        "suggestions, not orders, then finish with ONE friendly question "
+        "inviting them to pick one or ask something else. "
         "Output the explanation text only, with the five headings."
     ),
     "es": (
@@ -116,8 +121,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'Cómo solucionarlo' - apply the separation proposal from the JSON, plus "
         "one specific control for each amplifier listed. 4) 'Conclusión' - one "
-        "sentence. 5) 'Próximos pasos' - 2-3 concrete actions the owner can take "
-        "right away, in order, one short imperative line each. "
+        "sentence. 5) 'Próximos pasos' - offer 2-3 concrete things the owner could "
+        "try, as gentle suggestions, not orders, then finish with ONE friendly "
+        "question inviting them to pick one or ask something else. "
         "Output the explanation text only, with the five headings."
     ),
 })

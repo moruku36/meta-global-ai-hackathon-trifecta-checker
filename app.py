@@ -23,7 +23,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from check import explain_result, extract_and_judge, judge_profile  # noqa: E402
+from check import explain_result, extract_and_judge, followup, judge_profile  # noqa: E402
 
 BASE = Path(__file__).resolve().parent
 LANGS = ["en", "ja", "zh", "hi", "es"]
@@ -31,11 +31,18 @@ LANGS = ["en", "ja", "zh", "hi", "es"]
 # --- UI strings -------------------------------------------------------------
 STRINGS = {
     "lead": {
-        "en": "An AI agent gets dangerous when three powers combine: reading <b>private data</b>, taking in <b>content from other people</b>, and <b>sending data out</b>. Tell me about your agent — a rule engine (not an AI) gives the verdict; Muse Spark only helps read your words and explain the result.",
-        "ja": "AIエージェントが危なくなるのは、3つの力が揃ったときです：<b>秘密のデータを読む</b>、<b>他人からの内容を受け取る</b>、<b>外へ送信する</b>。あなたのエージェントのことを教えてください。判定はAIではなくルールエンジンが行い、Muse Spark は文章の読み取りと説明だけを手伝います。",
-        "zh": "当三种能力凑齐时，AI 智能体就会变得危险：<b>读取私人数据</b>、<b>接收他人发来的内容</b>、<b>向外发送数据</b>。请把您的智能体告诉我——判定由规则引擎（不是 AI）完成，Muse Spark 只帮忙读懂您的描述并解释结果。",
-        "hi": "AI एजेंट तब खतरनाक बनता है जब तीन शक्तियाँ एक साथ मिलती हैं: <b>निजी डेटा पढ़ना</b>, <b>दूसरों की सामग्री ग्रहण करना</b>, और <b>बाहर डेटा भेजना</b>। मुझे अपने एजेंट के बारे में बताएँ — निर्णय एक नियम-आधारित इंजन (AI नहीं) देता है; Muse Spark सिर्फ़ आपके शब्दों को पढ़ने और परिणाम समझाने में मदद करता है।",
-        "es": "Un agente de IA se vuelve peligroso cuando se combinan tres poderes: <b>leer datos privados</b>, <b>recibir contenido de otras personas</b> y <b>enviar datos fuera</b>. Cuéntame sobre tu agente: el veredicto lo da un motor de reglas (no una IA); Muse Spark solo ayuda a leer tu descripción y explicar el resultado.",
+        "en": "Let's check whether your AI agent is safe to use. Just tell me what it does, in your own words — I'll look at whether a risky mix of powers is hiding in it: reading your <b>private data</b>, taking in <b>content from other people</b>, and <b>sending things out</b>. One of those alone is fine; trouble starts when they all meet in one agent.",
+        "ja": "あなたのAIエージェントが、安全に使えるかどうかを一緒に確かめます。ふだんの言葉で「何をするものか」を教えてくれればOK。危ないのは、<b>大事なデータを読む</b>・<b>よそから来た文を読む</b>・<b>外に送れる</b>、この3つが1つのエージェントに揃ったとき。その組み合わせになっていないか見ていくよ。",
+        "zh": "我们一起看看你的 AI 智能体用起来安不安全。你只要用平时的话说说它是做什么的就行。真正危险的是三种能力凑在同一个智能体上：<b>读到重要数据</b>、<b>读别人发来的内容</b>、<b>能往外发东西</b>。我来帮你检查有没有这种情况。",
+        "hi": "आइए साथ में जाँचें कि आपका AI एजेंट इस्तेमाल के लिए सुरक्षित है या नहीं। बस अपनी भाषा में बताएँ कि यह क्या करता है। खतरा तब होता है जब तीन शक्तियाँ एक ही एजेंट में मिल जाएँ: <b>ज़रूरी डेटा पढ़ना</b>, <b>दूसरों की सामग्री पढ़ना</b>, और <b>बाहर कुछ भेज पाना</b>। मैं देखकर बताऊँगा कि ऐसा मेल तो नहीं है।",
+        "es": "Vamos a comprobar juntos si tu agente de IA es seguro de usar. Solo cuéntame con tus palabras qué hace. El peligro aparece cuando tres poderes se juntan en un mismo agente: <b>leer datos importantes</b>, <b>leer contenido de otras personas</b> y <b>poder enviar cosas fuera</b>. Reviso si esa mezcla está presente.",
+    },
+    "verdict_say": {
+        "en": "I had a look — the verdict is {v}.",
+        "ja": "見てみたよ。判定は {v} だね。",
+        "zh": "我看过了，判定是 {v}。",
+        "hi": "मैंने देख लिया — निर्णय है {v}।",
+        "es": "Ya lo revisé: el veredicto es {v}.",
     },
     "lang_label": {"en": "Language", "ja": "言語", "zh": "语言", "hi": "भाषा", "es": "Idioma"},
     "greeting": {
@@ -325,7 +332,8 @@ function addThinking(){
 }
 function verdictHTML(v, prefix){
   const el = [[t("el1"), v.elements.data_access], [t("el2"), v.elements.untrusted_input], [t("el3"), v.elements.outbound]];
-  let h = (prefix ? '<div style="margin-bottom:6px">'+esc(prefix)+"</div>" : "") +
+  let h = (prefix ? '<div style="margin-bottom:6px">'+esc(prefix)+"</div>" :
+           '<div style="margin-bottom:6px">'+esc(t("verdict_say").replace("{v}", v.verdict))+"</div>") +
     '<span class="badge '+v.verdict+'">'+v.verdict+'</span> '+
     '<span class="muted">'+t("powers_fmt").replace("{n}", v.element_count)+
     (v.amplifiers.length ? " · "+t("plus")+" "+v.amplifiers.length : "")+'</span><div style="margin-top:6px">';
@@ -415,11 +423,6 @@ async function explainFlow(){
   }catch(e){
     m.querySelector(".bubble").textContent = t("exp_unavailable") + e.message + ")";
   }
-  const acts = addBot(chipsHTML([{label: t("split_btn")}, {label: t("restart_btn")}]));
-  wireChips(acts.querySelector(".bubble"), [
-    {label: t("split_btn"), fn: showSplit},
-    {label: t("restart_btn"), fn: () => location.reload()},
-  ]);
 }
 async function showSplit(){
   const think = addThinking();
@@ -455,16 +458,49 @@ async function runCheck(url, body, isText){
       '<br><span class="muted">'+esc(t("error_tip"))+"</span>";
   }finally{ scrollDown(); }
 }
+async function runFollowup(text){
+  const my = ++runSeq;
+  const think = addThinking();
+  try{
+    const r = await post("/api/followup", {message: text, profile, verdict, lang});
+    if (my !== runSeq) return;
+    if (r.action === "new"){
+      think.remove(); lastText = text;
+      runCheck("/api/check", {text}, true);
+      return;
+    }
+    if (r.reply){
+      think.querySelector(".bubble").innerHTML = "<pre></pre>";
+      think.querySelector("pre").textContent = r.reply;
+    } else think.remove();
+    if (r.action === "split") await showSplit();
+  }catch(e){
+    think.remove(); lastText = text;
+    runCheck("/api/check", {text}, true);
+  }
+}
+function stopVoice(){
+  if (listening && recog){
+    recog.onresult = null; recog.onend = null; recog.onerror = null;
+    try{ recog.stop(); }catch(_){}
+    listening = false;
+    document.getElementById("micbtn").textContent = "🎤";
+    document.getElementById("wave").classList.remove("on");
+  }
+}
 function sendText(){
   const box = document.getElementById("desc");
   const text = box.value.trim(); if (!text) return;
   box.value = ""; autogrow();
+  stopVoice();
   started = true;
   addUser(text);
   if (qInterrupt){
     const f = qInterrupt; qInterrupt = null; runSeq++; f();
     lastText = (lastText + " " + text).trim();
     runCheck("/api/check", {text: lastText}, true);
+  } else if (verdict){
+    runFollowup(text);
   } else {
     lastText = text;
     runCheck("/api/check", {text}, true);
@@ -518,7 +554,7 @@ document.getElementById("greeting").textContent = t("greeting");
 if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
   document.getElementById("micbtn").style.display = "none";
 document.getElementById("desc").addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) sendText();
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendText(); }
 });
 document.getElementById("desc").addEventListener("input", autogrow);
 </script></body></html>"""
@@ -580,6 +616,10 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/api/explain":
                 result = explain_result(payload.get("verdict", {}),
                                         payload.get("profile"), lang=lang)
+            elif self.path == "/api/followup":
+                result = followup(str(payload.get("message", "")),
+                                  payload.get("profile"), payload.get("verdict"),
+                                  lang=lang)
             else:
                 return self._json(404, {"ok": False, "error": "unknown endpoint"})
             return self._json(200, {"ok": True, "result": result})
