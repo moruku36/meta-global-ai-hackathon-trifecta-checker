@@ -523,7 +523,7 @@ function setLang(l){
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.getElementById("desc").placeholder = t("placeholder");
   const g = document.getElementById("greeting");
-  if (g && !started) g.innerHTML = esc(t("greeting")).replaceAll("\n", "<br>");
+  if (g && !started) g.innerHTML = esc(t("greeting")).replaceAll("\\n", "<br>");
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
 let recog = null, listening = false, voiceBase = "", recStart = 0, recTimer = null;
@@ -615,7 +615,7 @@ const INIT_LANG = (navigator.language || "en").slice(0, 2);
 document.getElementById("lang").value = ["en","ja","zh","hi","es"].includes(INIT_LANG) ? INIT_LANG : "en";
 setLang(document.getElementById("lang").value);
 addBot('<span id="greeting"></span>');
-document.getElementById("greeting").innerHTML = esc(t("greeting")).replaceAll("\n", "<br>");
+document.getElementById("greeting").innerHTML = esc(t("greeting")).replaceAll("\\n", "<br>");
 if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
   document.getElementById("micbtn").style.display = "none";
 document.getElementById("desc").addEventListener("keydown", (e) => {
@@ -629,7 +629,7 @@ document.getElementById("filein").addEventListener("change", async (e) => {
     if (f.size > 200000) throw new Error("too big");
     const text = await f.text();
     const box = document.getElementById("desc");
-    box.value = (box.value ? box.value + "\n" : "") + text.trim();
+    box.value = (box.value ? box.value + "\\n" : "") + text.trim();
     autogrow(); box.focus();
   }catch(_){ addBot(esc(t("attach_error"))); }
 });
