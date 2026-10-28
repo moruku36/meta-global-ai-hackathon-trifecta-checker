@@ -130,7 +130,7 @@ perfil/veredicto actual en el estado de la página y lo reenvía con cada llamad
 
 ## 6. Verificación
 
-- **Reproducibilidad del motor (sin LLM):** `test_engine.py` evalúa los seis
+- **Reproducibilidad del motor (sin LLM):** `tests/test_engine.py` evalúa los seis
   perfiles canónicos más dos casos límite (un elemento + amplificador;
   sin poderes), cada uno dos veces — 8/8 superados, veredictos idénticos byte por byte entre ejecuciones.
 - **Extracción:** verificada 4/4 en los textos de prueba (Low / Risky /

@@ -130,7 +130,7 @@ current profile/verdict in page state and re-sends it with each call.
 
 ## 6. Verification
 
-- **Engine reproducibility (no LLM):** `test_engine.py` judges the six
+- **Engine reproducibility (no LLM):** `tests/test_engine.py` judges the six
   canonical profiles plus two boundary cases (one element + amplifier;
   no powers), each twice — 8/8 pass, byte-identical verdicts across runs.
 - **Extraction:** verified 4/4 on the text fixtures (Low / Risky /

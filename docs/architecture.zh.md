@@ -72,7 +72,7 @@ Meta Model API — Muse Spark 1.3 (api.meta.ai, OpenAI-compatible)
 
 ## 6. 验证
 
-- **引擎可复现性（无 LLM）：** `test_engine.py` 判定六个标准 profile 加两个边界情况（一个要素 + 放大器；无能力），每个跑两遍——8/8 通过，多次运行 verdict 字节级一致。
+- **引擎可复现性（无 LLM）：** `tests/test_engine.py` 判定六个标准 profile 加两个边界情况（一个要素 + 放大器；无能力），每个跑两遍——8/8 通过，多次运行 verdict 字节级一致。
 - **抽取：** 在文本 fixtures 上 4/4 验证通过（Low / Risky /
   Lethal / Lethal），与引擎预期 verdict 一致。一次 repair 路径探测（某描述首次产生了自创 token）确认 repair 调用将其规范化到封闭词汇表内，并仍然得到正确 verdict；无法 repair 的 profile 按设计大声失败。
 - **开源权重路径：** 2026-10-27 在 Muse Spark Open（经由
