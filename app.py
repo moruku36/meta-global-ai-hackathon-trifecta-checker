@@ -142,6 +142,14 @@ STRINGS = {
     "el2": {"en": "Reads what others send in", "ja": "よそから来た文を読む", "zh": "会读别人发来的内容", "hi": "दूसरों की भेजी बातें पढ़ता है", "es": "Lee lo que envían otros"},
     "el3": {"en": "Can send things out", "ja": "外に送れる", "zh": "能往外发东西", "hi": "बाहर भेज सकता है", "es": "Puede enviar cosas fuera"},
     "of_powers": {"en": "of the 3 powers", "ja": "3つの力のうち", "zh": "三项能力中占", "hi": "3 शक्तियों में से", "es": "de los 3 poderes"},
+    "powers_fmt": {"en": "{n} of the 3 powers", "ja": "3つの力のうち {n}つ", "zh": "三项能力中占 {n} 项", "hi": "3 शक्तियों में से {n}", "es": "{n} de los 3 poderes"},
+    "chips_hint": {
+        "en": "Tap one — or just type your answer below.",
+        "ja": "ボタンでも、下に言葉で書いてもらっても大丈夫だよ。",
+        "zh": "点一个就行，也可以直接在下面输入。",
+        "hi": "एक दबाएँ — या नीचे लिखकर भी बता सकते हैं।",
+        "es": "Toca uno, o escribe tu respuesta abajo.",
+    },
     "plus": {"en": "plus:", "ja": "追加：", "zh": "另外：", "hi": "साथ में:", "es": "además:"},
 }
 
@@ -319,7 +327,7 @@ function verdictHTML(v, prefix){
   const el = [[t("el1"), v.elements.data_access], [t("el2"), v.elements.untrusted_input], [t("el3"), v.elements.outbound]];
   let h = (prefix ? '<div style="margin-bottom:6px">'+esc(prefix)+"</div>" : "") +
     '<span class="badge '+v.verdict+'">'+v.verdict+'</span> '+
-    '<span class="muted">'+v.element_count+" "+t("of_powers")+
+    '<span class="muted">'+t("powers_fmt").replace("{n}", v.element_count)+
     (v.amplifiers.length ? " · "+t("plus")+" "+v.amplifiers.length : "")+'</span><div style="margin-top:6px">';
   for (const [name,on] of el)
     h += '<span class="elem '+(on?"on":"off")+'">'+(on?"✓ ":"✗ ")+name+"</span>";
@@ -353,6 +361,22 @@ const EDITS = {
     if (ans === "yes") p.amplifiers = p.amplifiers.filter(a => a !== "no_human_approval");
   },
 };
+function levelOf(p){
+  const e = (p.data_access.length?1:0)+(p.untrusted_inputs.length?1:0)+(p.outbound.length?1:0);
+  if (e === 3) return 2;
+  if (e === 2 || (e === 1 && p.amplifiers.length)) return 1;
+  return 0;
+}
+function pickQuestions(result){
+  // Ask at most ONE follow-up, and only when the answer could change the verdict.
+  const cur = levelOf(result.profile);
+  for (const key of result.unclear || []){
+    const p2 = JSON.parse(JSON.stringify(result.profile));
+    EDITS[key](p2, key === "human_approval" ? "no" : "yes");
+    if (levelOf(p2) !== cur) return [key];
+  }
+  return [];
+}
 let runSeq = 0, qInterrupt = null, lastText = "";
 async function askQuestions(keys){
   const my = runSeq;
@@ -360,7 +384,8 @@ async function askQuestions(keys){
     const qkey = DATA.questions[key]; if (!qkey) continue;
     const ans = await new Promise(resolve => {
       const m = addBot(esc(t(qkey)) + chipsHTML([
-        {label: t("yes")}, {label: t("no")}, {label: t("unsure")}]));
+        {label: t("yes")}, {label: t("no")}, {label: t("unsure")}]) +
+        '<div class="muted" style="margin-top:8px">'+esc(t("chips_hint"))+"</div>");
       const bubble = m.querySelector(".bubble");
       qInterrupt = () => { bubble.querySelectorAll("[data-chip]").forEach(b => b.disabled = true); resolve("typed"); };
       wireChips(bubble, [
@@ -416,9 +441,12 @@ async function runCheck(url, body, isText){
     if (my !== runSeq) return;
     profile = result.profile; verdict = result.verdict;
     think.querySelector(".bubble").innerHTML = verdictHTML(verdict, "");
-    if (isText && result.unclear && result.unclear.length){
-      const ok = await askQuestions(result.unclear);
-      if (!ok || my !== runSeq) return;
+    if (isText){
+      const qs = pickQuestions(result);
+      if (qs.length){
+        const ok = await askQuestions(qs);
+        if (!ok || my !== runSeq) return;
+      }
     }
     await explainFlow();
   }catch(e){
