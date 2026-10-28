@@ -45,13 +45,6 @@ STRINGS = {
         "hi": "नमस्ते, मैं Trafica हूँ, तुम्हारी Trifecta जाँच करने वाली👋\nमैं AI एजेंट की तीन ताकतें देखती हूँ: तुम्हारा निजी डेटा पढ़ना, बाहर से आई चीज़ें पढ़ना, और बाहर कुछ भेजना। जब एक ही एजेंट के पास तीनों हों, तो बाहर से आए संदेश में छिपी चाल से तुम्हारा डेटा बाहर जा सकता है। मैं यही खतरनाक मेल जाँचती हूँ।\nशुरू करना आसान है। नीचे वाले डिब्बे में बस लिख दो कि तुम्हारा एजेंट क्या करता है — जैसे: “यह मेरी ईमेल पढ़ता है और मेरी तरफ से जवाब भी भेजता है।” + दबाकर टेक्स्ट फ़ाइल भी लगा सकते हो, या 🎤 दबाकर मुझसे बात भी कर सकते हो।",
         "es": "¡Hola! Soy Trafica, tu verificadora trifecta 👋\nReviso tres poderes que puede tener un agente de IA: leer tus datos privados, leer cosas que llegan de otras personas y enviar cosas fuera. Cuando un solo agente tiene los tres, un truco escondido en un mensaje entrante puede hacer que filtre tus datos. Esa es la mezcla que reviso por ti.\nEmpezar es fácil. Escribe en el cuadro de abajo qué hace tu agente, por ejemplo: «Lee mi correo y envía respuestas por mí». También puedes tocar + para cargar un archivo de texto, o tocar 🎤 y hablar conmigo.",
     },
-    "placeholder": {
-        "en": "Describe your agent here…",
-        "ja": "エージェントの説明をここに書く…",
-        "zh": "在这里描述您的智能体…",
-        "hi": "अपने एजेंट का वर्णन यहाँ लिखें…",
-        "es": "Describe tu agente aquí…",
-    },
     "check_btn": {"en": "Check", "ja": "チェック", "zh": "检查", "hi": "जाँचें", "es": "Comprobar"},
     "mic_btn": {"en": "🎤", "ja": "🎤", "zh": "🎤", "hi": "🎤", "es": "🎤"},
     "thinking": {"en": "Let me take a look…", "ja": "うーん、見てみるね…", "zh": "我看看啊…", "hi": "ज़रा देखने दो…", "es": "Déjame ver…"},
@@ -278,7 +271,7 @@ PAGE = """<!DOCTYPE html>
  @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
  .inputbar{position:sticky;bottom:0;background:#0f172a;padding:10px 0 4px}
  .composer{display:flex;gap:8px;align-items:flex-end;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:8px}
- textarea{flex:1;min-height:64px;max-height:180px;background:transparent;color:#e2e8f0;border:0;outline:none;padding:8px 4px;font-size:16px;line-height:1.5;box-sizing:border-box;resize:none;overflow-y:auto;scrollbar-width:none}
+ textarea{flex:1;min-height:44px;max-height:180px;background:transparent;color:#e2e8f0;border:0;outline:none;padding:8px 4px;font-size:16px;line-height:1.5;box-sizing:border-box;resize:none;overflow-y:auto;scrollbar-width:none}
  textarea::-webkit-scrollbar{display:none}
  .iconbtn{border-radius:50%;width:44px;height:44px;flex:none;font-size:19px;padding:0;min-height:44px;background:#2563eb}
  .iconbtn.ghost{background:transparent;border:0;color:#cbd5e1}
