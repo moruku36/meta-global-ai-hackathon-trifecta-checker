@@ -46,11 +46,11 @@ STRINGS = {
     },
     "lang_label": {"en": "Language", "ja": "言語", "zh": "语言", "hi": "भाषा", "es": "Idioma"},
     "greeting": {
-        "en": "Hi there! Tell me about your agent — what it can read, what comes in from other people, and what it can send out. I'll take a look and see if that mix is safe.",
-        "ja": "やあ、こんにちは！ あなたのエージェントのことを教えて。何を読めて、よそから何が届いて、何を外に送れるか。それを聞けば、危ない組み合わせになっていないか一緒に見ていくよ。",
-        "zh": "你好呀！跟我说说你的智能体吧——它能读什么、会收到别人发来的什么、能往外发什么。我来帮你看看这个组合安不安全。",
-        "hi": "नमस्ते! अपने एजेंट के बारे में बताओ — यह क्या पढ़ सकता है, बाहर से इसे क्या मिलता है, और यह बाहर क्या भेज सकता है। मैं देखकर बताऊँगा कि यह मेल सुरक्षित है या नहीं।",
-        "es": "¡Hola! Cuéntame sobre tu agente: qué puede leer, qué le llega de otras personas y qué puede enviar. Lo reviso contigo y vemos si esa mezcla es segura.",
+        "en": "Hi, I'm Trafica, your Trifecta Checker! 👋\nI look at three powers an AI agent can have: reading your private data, reading things that arrive from other people, and sending things out. When one agent has all three, a trick hidden in an incoming message can make it leak your data — that's the mix I check for you.\nStarting is easy. Just write what your agent does in the box below — for example: \"It reads my email and sends replies for me.\" You can also tap + to load a text file, or tap 🎤 and just talk to me.",
+        "ja": "こんにちは、トラフィカだよ。三要素チェックを担当してるよ👋\nAIエージェントが持つ3つの力——大事なデータを読めること、よそから届いた文を読むこと、外に送れること——を見ていくよ。この3つが1つのエージェントにそろうと、届いた文に仕掛けられたワナで、大事なデータが漏れてしまうことがあるんだ。その危ない組み合わせになっていないか、一緒に確かめよう。\n始め方はかんたん。下の欄に、あなたのエージェントが何をしているか書いてみて。たとえば「メールを読んで、返事も送ってくれるアシスタント」みたいにね。＋ボタンでテキストファイルを読み込ませたり、🎤で話しかけたりもできるよ。",
+        "zh": "你好，我是 Trafica，负责三要素检查👋\n我会看 AI 智能体的三种能力：读取你的重要数据、读取从外面送来的内容、把内容发送到外面。当一个智能体同时拥有这三种能力时，送来的内容里藏着的陷阱可能会让它把你的数据泄露出去。我就是来帮你检查这种危险组合的。\n开始很简单，在下面的框里写下你的智能体在做什么就行，比如：“它会读我的邮件，还会替我回复。”也可以点＋加载文本文件，或者点🎤直接跟我说。",
+        "hi": "नमस्ते, मैं Trafica हूँ, तुम्हारी Trifecta जाँच करने वाली👋\nमैं AI एजेंट की तीन ताकतें देखती हूँ: तुम्हारा निजी डेटा पढ़ना, बाहर से आई चीज़ें पढ़ना, और बाहर कुछ भेजना। जब एक ही एजेंट के पास तीनों हों, तो बाहर से आए संदेश में छिपी चाल से तुम्हारा डेटा बाहर जा सकता है। मैं यही खतरनाक मेल जाँचती हूँ।\nशुरू करना आसान है। नीचे वाले डिब्बे में बस लिख दो कि तुम्हारा एजेंट क्या करता है — जैसे: “यह मेरी ईमेल पढ़ता है और मेरी तरफ से जवाब भी भेजता है।” + दबाकर टेक्स्ट फ़ाइल भी लगा सकते हो, या 🎤 दबाकर मुझसे बात भी कर सकते हो।",
+        "es": "¡Hola! Soy Trafica, tu verificadora trifecta 👋\nReviso tres poderes que puede tener un agente de IA: leer tus datos privados, leer cosas que llegan de otras personas y enviar cosas fuera. Cuando un solo agente tiene los tres, un truco escondido en un mensaje entrante puede hacer que filtre tus datos. Esa es la mezcla que reviso por ti.\nEmpezar es fácil. Escribe en el cuadro de abajo qué hace tu agente, por ejemplo: «Lee mi correo y envía respuestas por mí». También puedes tocar + para cargar un archivo de texto, o tocar 🎤 y hablar conmigo.",
     },
     "placeholder": {
         "en": "Describe your agent here…",
@@ -523,7 +523,7 @@ function setLang(l){
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.getElementById("desc").placeholder = t("placeholder");
   const g = document.getElementById("greeting");
-  if (g && !started) g.textContent = t("greeting");
+  if (g && !started) g.innerHTML = esc(t("greeting")).replaceAll("\n", "<br>");
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
 let recog = null, listening = false, voiceBase = "", recStart = 0, recTimer = null;
@@ -615,7 +615,7 @@ const INIT_LANG = (navigator.language || "en").slice(0, 2);
 document.getElementById("lang").value = ["en","ja","zh","hi","es"].includes(INIT_LANG) ? INIT_LANG : "en";
 setLang(document.getElementById("lang").value);
 addBot('<span id="greeting"></span>');
-document.getElementById("greeting").textContent = t("greeting");
+document.getElementById("greeting").innerHTML = esc(t("greeting")).replaceAll("\n", "<br>");
 if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
   document.getElementById("micbtn").style.display = "none";
 document.getElementById("desc").addEventListener("keydown", (e) => {
