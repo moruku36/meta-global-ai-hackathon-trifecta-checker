@@ -8,6 +8,25 @@ Built for the Meta Global AI Developer Hackathon (Oct–Nov 2026).
 
 **Live demo:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 
+## What it is like to use
+
+You chat with **Trafica**, a friendly checker character — no forms, no
+security vocabulary needed:
+
+1. **Describe your agent in your own words.** Type it, tap 🎤 and talk, or
+   tap + and load a text file (an agent config works well).
+2. **Get a verdict in plain words** — Low, Risky or Lethal — with the powers
+   behind it and an everyday-language explanation of what could go wrong
+   and how to fix it.
+3. **If a detail could change the verdict, Trafica asks one question back**
+   instead of guessing. Answer with a tap or by typing.
+4. **Keep talking.** Ask "what if I split it?" and Trafica shows the split —
+   a read-only Reader and an approval-gated Sender — with fresh verdicts for
+   each half.
+
+The whole conversation works in five languages: English, Japanese, Chinese,
+Hindi and Spanish.
+
 ## The idea: the lethal trifecta
 
 An agent becomes dangerous when three powers meet in one place:
@@ -44,12 +63,15 @@ description ──▶ extraction ──▶ rule engine ──▶ explanation
   (`trifecta_checker.py`) applies the rating rules, so the same profile
   always gets the same verdict. That reproducibility is the point.
 - **Muse Spark's job is translation**: turning a free-text description into
-  the engine's structured profile, and turning the verdict back into plain
-  language (English/Japanese) with one concrete attack scenario and a fix.
+  the engine's structured profile, turning the verdict back into plain
+  language in five languages with one concrete attack scenario and a fix,
+  and carrying the follow-up conversation after the verdict.
 - **Extraction is validated.** The engine has a closed vocabulary. If the
   model invents a token, the output is sent back once with the allowed
   vocabulary (a *repair call*); if it still does not fit, extraction fails
-  loudly and the UI offers a checkbox form instead of guessing.
+  loudly instead of guessing. Aspects the description leaves open are
+  reported back, and the UI asks about the one that could change the
+  verdict.
 
 Every verdict ships with its evidence (which capability produced which
 element) and a **separation proposal**: split into a read-only Reader and a
@@ -94,7 +116,8 @@ See `fixtures/fixtures.json` for the manifest.
   check does not cover — see the OWASP Top 10 for Agentic Applications for
   the wider map.
 - Extraction quality depends on the description. Vague descriptions produce
-  vague profiles; the form mode exists for precise answers.
+  vague profiles; the checker asks back about the gaps that matter, but an
+  honest, specific description still gives the most reliable verdict.
 
 ## References
 
