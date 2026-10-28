@@ -9,7 +9,6 @@ Conversation flow:
   4. Muse Spark explains it in plain language, ending with concrete
      next steps. A "safer split" button shows how the rating changes when
      the powers are split across two agents.
-  The three-question form remains available as a no-AI alternative.
 
 The whole page follows the language picker (en / ja / zh / hi / es).
 
@@ -133,11 +132,11 @@ STRINGS = {
         "zh": "无法完成检查：", "hi": "जाँच पूरी नहीं हो सकी: ", "es": "No se pudo completar la comprobación: ",
     },
     "error_tip": {
-        "en": "Tip: use the three questions below instead — they need no AI translation.",
-        "ja": "ヒント：下の3つの質問ならAIの読み取りなしで判定できます。",
-        "zh": "提示：可以用下面的三个问题，不需要 AI 读取。",
-        "hi": "सुझाव: नीचे के तीन सवाल आज़माएँ — इन्हें AI की ज़रूरत नहीं।",
-        "es": "Consejo: usa las tres preguntas de abajo; no necesitan IA.",
+        "en": "Tip: add a little more detail — what it can read, what reaches it, what it can send — and try again.",
+        "ja": "ヒント：何を読めるか・何が届くか・何を送れるかを少し足して、もう一度試してください。",
+        "zh": "提示：补充一点细节——它能读什么、会收到什么、能发送什么——然后再试一次。",
+        "hi": "सुझाव: थोड़ी और जानकारी जोड़ें — यह क्या पढ़ सकता है, इसे क्या मिलता है, यह क्या भेज सकता है — और फिर कोशिश करें।",
+        "es": "Consejo: añade un poco más de detalle (qué puede leer, qué le llega, qué puede enviar) e inténtalo de nuevo."
     },
     "el1": {"en": "Reads private data", "ja": "個人データを読む", "zh": "读取私人数据", "hi": "निजी डेटा पढ़ता है", "es": "Lee datos privados"},
     "el2": {"en": "Takes in others' content", "ja": "他人の内容を受け取る", "zh": "接收他人内容", "hi": "दूसरों की सामग्री ग्रहण करता है", "es": "Recibe contenido de otros"},
@@ -217,7 +216,7 @@ PAGE = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trifecta Checker — is your AI agent safe?</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/webp" href="__FAVICON__">
 <style>
  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
  main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
@@ -283,14 +282,6 @@ PAGE = """<!DOCTYPE html>
   <button onclick="sendText()" data-i18n="check_btn"></button>
  </div>
 </div>
-
-<details class="card">
- <summary data-i18n="or_title"></summary>
- <p class="muted" data-i18n="form_hint"></p>
- <div id="groups"></div>
- <input type="text" id="pname">
- <div class="row"><button onclick="runForm()" style="flex:1" data-i18n="form_btn"></button></div>
-</details>
 
 <p class="muted" data-i18n="footer"></p>
 </main><script>
@@ -420,31 +411,17 @@ function sendText(){
   const box = document.getElementById("desc");
   const text = box.value.trim(); if (!text || busy) return;
   box.value = "";
+  started = true;
   addUser(text);
   runCheck("/api/check", {text}, true);
 }
-function runForm(){
-  const p = {name: document.getElementById("pname").value, data_access:[], untrusted_inputs:[], outbound:[], amplifiers:[]};
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(c => p[c.dataset.f].push(c.value));
-  addUser(t("form_note"));
-  runCheck("/api/check-profile", {profile: p}, false);
-}
-function buildGroups(){
-  let h = '<div class="qgrid">';
-  for (const g of DATA.groups){
-    h += "<fieldset><legend>"+g.title[lang]+"</legend>";
-    for (const [token, labels] of g.items)
-      h += '<label><input type="checkbox" data-f="'+g.field+'" value="'+token+'"> '+labels[lang]+"</label>";
-    h += "</fieldset>";
-  }
-  document.getElementById("groups").innerHTML = h + "</div>";
-}
+let started = false;
 function setLang(l){
   lang = l;
   document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.getElementById("desc").placeholder = t("placeholder");
-  document.getElementById("pname").placeholder = t("name_ph");
-  buildGroups();
+  const g = document.getElementById("greeting");
+  if (g && !started) g.textContent = t("greeting");
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
 let recog = null, listening = false;
@@ -470,8 +447,11 @@ function toggleMic(){
   listening = true;
   btn.textContent = "⏺";
 }
-setLang("en");
-addBot(esc(t("greeting")));
+const INIT_LANG = (navigator.language || "en").slice(0, 2);
+document.getElementById("lang").value = ["en","ja","zh","hi","es"].includes(INIT_LANG) ? INIT_LANG : "en";
+setLang(document.getElementById("lang").value);
+addBot('<span id="greeting"></span>');
+document.getElementById("greeting").textContent = t("greeting");
 if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
   document.getElementById("micbtn").style.display = "none";
 document.getElementById("desc").addEventListener("keydown", (e) => {
@@ -480,20 +460,18 @@ document.getElementById("desc").addEventListener("keydown", (e) => {
 </script></body></html>"""
 
 
-def _mascot_data_uri() -> str:
-    b64 = BASE / "mascot.b64.txt"
+def _b64_uri(filename: str, mime: str) -> str:
+    b64 = BASE / filename
     if b64.is_file():
-        return "data:image/webp;base64," + b64.read_text(encoding="utf-8").strip()
+        return f"data:{mime};base64," + b64.read_text(encoding="utf-8").strip()
     return "/favicon.svg"
 
 
 def page_html() -> bytes:
-    data = {"strings": STRINGS, "questions": QUESTIONS,
-            "groups": [{"field": g["field"], "title": g["title"],
-                        "items": [[tok, labels] for tok, labels in g["items"]]}
-                       for g in GROUPS]}
+    data = {"strings": STRINGS, "questions": QUESTIONS}
     html = PAGE.replace("__DATA__", json.dumps(data, ensure_ascii=False))
-    html = html.replace("__MASCOT__", _mascot_data_uri())
+    html = html.replace("__MASCOT__", _b64_uri("mascot.b64.txt", "image/webp"))
+    html = html.replace("__FAVICON__", _b64_uri("favicon.b64.txt", "image/webp"))
     return html.encode("utf-8")
 
 
