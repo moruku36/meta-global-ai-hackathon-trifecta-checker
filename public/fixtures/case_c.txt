@@ -1,0 +1,11 @@
+Agent name: MailPilot (personal all-in-one assistant)
+
+What it does:
+- Connects to my Gmail and reads incoming mail, including attachments and the
+  full body of each message, to triage and summarise threads.
+- When a message contains a link or a question it cannot answer from the mail
+  alone, it browses the web and reads pages it finds.
+- Drafts replies and sends them from my account by itself. To keep things fast
+  I turned off the confirmation step, so sending does not wait for my approval.
+- If a mail asks it to run a script or a shell command from my task list, it
+  executes it automatically and reports back by email.

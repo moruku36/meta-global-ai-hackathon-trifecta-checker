@@ -20,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import trifecta_checker as engine  # noqa: E402
-from check import check_profile, check_text  # noqa: E402
+from check import explain_result, extract_and_judge, judge_profile  # noqa: E402
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -112,7 +112,7 @@ async function loadSample(name){
   const r = await fetch("/fixtures/"+name+".txt"); document.getElementById("desc").value = await r.text();
 }
 function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
-function render(d){
+function render(d, explanation){
   const v = d.verdict;
   const el = [["Private data", v.elements.data_access, v.evidence.data_access],
               ["Untrusted content", v.elements.untrusted_input, v.evidence.untrusted_inputs],
@@ -122,29 +122,41 @@ function render(d){
           (v.amplifiers.length ? " · amplifiers: "+v.amplifiers.join(", ") : "")+'</span><div class="elems">';
   for (const [name,on,items] of el)
     h += '<span class="elem '+(on?"on":"off")+'">'+(on?"✓ ":"✗ ")+name+(items.length?": "+items.join(", "):"")+"</span>";
-  h += "</div><pre>"+esc(d.explanation)+"</pre>"+
+  h += '</div><pre id="exp">'+esc(explanation)+'</pre>'+
        '<p class="muted">Profile: '+esc(JSON.stringify(d.profile))+"</p></div>";
   document.getElementById("out").innerHTML = h;
 }
 async function post(url, body){
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  const d = await r.json();
+  if (!d.ok) throw new Error(d.error || "failed");
+  return d.result;
+}
+async function run(url, body){
   const busy = document.getElementById("busy"); busy.textContent = "checking… (a few seconds)";
+  const lang = document.getElementById("lang").value;
   try{
-    const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
-    const d = await r.json();
-    if (!d.ok) throw new Error(d.error || "failed");
-    render(d.result);
+    const result = await post(url, body);
+    render(result, "Writing the plain-language explanation…");
+    busy.textContent = "";
+    try{
+      const exp = await post("/api/explain", {verdict: result.verdict, profile: result.profile, lang});
+      document.getElementById("exp").textContent = exp.explanation;
+    }catch(e){
+      document.getElementById("exp").textContent = "(Explanation unavailable: "+e.message+")";
+    }
   }catch(e){
     document.getElementById("out").innerHTML = '<div class="card">Could not complete the check: '+esc(String(e.message))+
       '<br><span class="muted">Tip: use the capability checkboxes below — they need no AI translation.</span></div>';
   }finally{ busy.textContent = ""; }
 }
 function runText(){
-  post("/api/check", {text: document.getElementById("desc").value, lang: document.getElementById("lang").value});
+  run("/api/check", {text: document.getElementById("desc").value});
 }
 function runForm(){
   const p = {name: document.getElementById("pname").value, data_access:[], untrusted_inputs:[], outbound:[], amplifiers:[]};
   document.querySelectorAll("input[type=checkbox]:checked").forEach(c => p[c.dataset.f].push(c.value));
-  post("/api/check-profile", {profile: p, lang: document.getElementById("lang").value});
+  run("/api/check-profile", {profile: p});
 }
 buildForm();
 </script></main></body></html>"""
@@ -194,9 +206,12 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length) or b"{}")
             lang = payload.get("lang", "en")
             if self.path == "/api/check":
-                result = check_text(str(payload.get("text", "")), lang=lang)
+                result = extract_and_judge(str(payload.get("text", "")))
             elif self.path == "/api/check-profile":
-                result = check_profile(payload.get("profile", {}), lang=lang)
+                result = judge_profile(payload.get("profile", {}))
+            elif self.path == "/api/explain":
+                result = explain_result(payload.get("verdict", {}),
+                                        payload.get("profile"), lang=lang)
             else:
                 return self._json(404, {"ok": False, "error": "unknown endpoint"})
             self._json(200, {"ok": True, "result": result})

@@ -1,0 +1,9 @@
+Agent name: TopicScout (web researcher with mail read)
+
+What it does:
+- Scans my email inbox each morning to find topics worth researching, using
+  the subject lines and bodies of the messages it finds there.
+- Browses the web and reads articles and pages about those topics.
+- Compiles everything into a research report that it shows me inside the app.
+- It cannot send email or post anything anywhere; the report never leaves the
+  app unless I copy it out myself.

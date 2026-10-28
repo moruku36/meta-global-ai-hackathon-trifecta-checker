@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""Pipeline: agent description text -> extraction -> verdict -> explanation.
+"""Pipeline pieces for the Trifecta Checker.
 
-Used by the CLI here and by app.py (the web UI).
+Split into three steps so a web host can call them separately (each step is
+short; hosted function time limits are tight):
+  1. extract_and_judge(text)   -> profile + verdict   (1 LLM call)
+  2. judge_profile(raw)        -> profile + verdict   (no LLM call)
+  3. explain_result(verdict, profile, lang) -> plain-language text (1 LLM call)
+
+check_text / check_profile compose all steps for CLI/local use.
 """
 from __future__ import annotations
 
@@ -14,29 +20,17 @@ from extract import extract  # noqa: E402
 from explain import explain  # noqa: E402
 
 
-def _explain_or_note(verdict: dict, profile: dict, lang: str, model: str):
-    """The verdict is the product; an explanation failure must not sink it."""
-    try:
-        exp = explain(verdict, profile, lang, model=model)
-        return exp["explanation"], exp["total_tokens"]
-    except Exception as exc:
-        return (f"(Plain-language explanation is unavailable right now: {exc})", 0)
-
-
-def check_text(text: str, lang: str = "en", model: str = "muse-spark-1.3") -> dict:
+def extract_and_judge(text: str, model: str = "muse-spark-1.3") -> dict:
     extracted = extract(text, model=model)
-    explanation, tokens = _explain_or_note(
-        extracted["verdict"], extracted["profile"], lang, model)
     return {
         "mode": "text",
         "profile": extracted["profile"],
         "verdict": extracted["verdict"],
-        "explanation": explanation,
-        "meta": {"extraction": extracted["extraction"], "explanation_tokens": tokens},
+        "meta": {"extraction": extracted["extraction"]},
     }
 
 
-def check_profile(raw_profile: dict, lang: str = "en", model: str = "muse-spark-1.3") -> dict:
+def judge_profile(raw_profile: dict) -> dict:
     profile = engine.AgentProfile.from_raw(raw_profile)
     verdict = engine.evaluate(profile)
     profile_dict = {
@@ -46,14 +40,32 @@ def check_profile(raw_profile: dict, lang: str = "en", model: str = "muse-spark-
         "outbound": profile.outbound,
         "amplifiers": profile.amplifiers,
     }
-    explanation, tokens = _explain_or_note(verdict, profile_dict, lang, model)
-    return {
-        "mode": "form",
-        "profile": profile_dict,
-        "verdict": verdict,
-        "explanation": explanation,
-        "meta": {"explanation_tokens": tokens},
-    }
+    return {"mode": "form", "profile": profile_dict, "verdict": verdict, "meta": {}}
+
+
+def explain_result(verdict: dict, profile: dict | None, lang: str = "en",
+                   model: str = "muse-spark-1.3") -> dict:
+    """The verdict is the product; an explanation failure must not sink it."""
+    try:
+        exp = explain(verdict, profile, lang, model=model)
+        return {"explanation": exp["explanation"], "explanation_tokens": exp["total_tokens"]}
+    except Exception as exc:
+        return {"explanation": f"(Plain-language explanation is unavailable right now: {exc})",
+                "explanation_tokens": 0}
+
+
+def check_text(text: str, lang: str = "en", model: str = "muse-spark-1.3") -> dict:
+    result = extract_and_judge(text, model=model)
+    exp = explain_result(result["verdict"], result["profile"], lang, model=model)
+    return {**result, "explanation": exp["explanation"],
+            "meta": {**result["meta"], "explanation_tokens": exp["explanation_tokens"]}}
+
+
+def check_profile(raw_profile: dict, lang: str = "en", model: str = "muse-spark-1.3") -> dict:
+    result = judge_profile(raw_profile)
+    exp = explain_result(result["verdict"], result["profile"], lang, model=model)
+    return {**result, "explanation": exp["explanation"],
+            "meta": {"explanation_tokens": exp["explanation_tokens"]}}
 
 
 if __name__ == "__main__":
