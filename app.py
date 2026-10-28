@@ -54,6 +54,8 @@ STRINGS = {
         "es": "Describe tu agente aquí…",
     },
     "check_btn": {"en": "Check this agent", "ja": "このエージェントをチェック", "zh": "检查这个智能体", "hi": "इस एजेंट की जाँच करें", "es": "Comprobar este agente"},
+    "mic_btn": {"en": "🎤 Speak", "ja": "🎤 話す", "zh": "🎤 说话", "hi": "🎤 बोलें", "es": "🎤 Hablar"},
+    "mic_listening": {"en": "🎤 Listening… tap to stop", "ja": "🎤 聞き取り中… もう一度押すと停止", "zh": "🎤 正在聆听… 再点一次停止", "hi": "🎤 सुन रहा है… रोकने के लिए फिर दबाएँ", "es": "🎤 Escuchando… toca para parar"},
     "or_title": {"en": "or answer three questions instead", "ja": "代わりに3つの質問に答える", "zh": "或者回答三个问题", "hi": "या तीन सवालों के जवाब दें", "es": "o responde tres preguntas"},
     "form_hint": {
         "en": "Tick everything your agent can do. Leave a question blank if the answer is none.",
@@ -211,6 +213,7 @@ PAGE = """<!DOCTYPE html>
  <textarea id="desc"></textarea>
  <div class="row">
    <button onclick="runText()" style="flex:1" data-i18n="check_btn"></button>
+   <button id="micbtn" onclick="toggleMic()" style="flex:0 0 auto" data-i18n="mic_btn"></button>
    <span id="busy" class="muted"></span>
  </div>
 </div>
@@ -282,6 +285,30 @@ async function run(url, body){
       '<br><span class="muted">'+esc(t("error_tip"))+"</span></div>";
   }finally{ busy.textContent = ""; }
 }
+const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
+let recog = null, listening = false;
+function toggleMic(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  const btn = document.getElementById("micbtn");
+  if (listening){ recog.stop(); return; }
+  recog = new SR();
+  recog.lang = SPEECH_LANG[lang] || "en-US";
+  recog.interimResults = true;
+  recog.continuous = true;
+  const box = document.getElementById("desc");
+  const base = box.value;
+  recog.onresult = (e) => {
+    let s = "";
+    for (const r of e.results) s += r[0].transcript;
+    box.value = base + (base && s ? " " : "") + s;
+  };
+  recog.onend = () => { listening = false; btn.textContent = t("mic_btn"); };
+  recog.onerror = () => { listening = false; btn.textContent = t("mic_btn"); };
+  recog.start();
+  listening = true;
+  btn.textContent = t("mic_listening");
+}
 function runText(){ run("/api/check", {text: document.getElementById("desc").value}); }
 function runForm(){
   const p = {name: document.getElementById("pname").value, data_access:[], untrusted_inputs:[], outbound:[], amplifiers:[]};
@@ -289,6 +316,8 @@ function runForm(){
   run("/api/check-profile", {profile: p});
 }
 setLang("en");
+if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
+  document.getElementById("micbtn").style.display = "none";
 </script></body></html>"""
 
 
