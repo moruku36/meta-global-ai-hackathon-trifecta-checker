@@ -1,5 +1,7 @@
 # Trifecta Checker — Overall Design
 
+**English** · [日本語](architecture.ja.md) · [中文](architecture.zh.md) · [हिन्दी](architecture.hi.md) · [Español](architecture.es.md)
+
 Status: as built and deployed, 2026-10-28.
 Live demo: https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 Repo: https://github.com/moruku36/meta-global-ai-hackathon-trifecta-checker
