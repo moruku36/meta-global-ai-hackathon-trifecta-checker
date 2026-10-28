@@ -150,6 +150,13 @@ STRINGS = {
     "el3": {"en": "Can send things out", "ja": "外に送れる", "zh": "能往外发东西", "hi": "बाहर भेज सकता है", "es": "Puede enviar cosas fuera"},
     "of_powers": {"en": "of the 3 powers", "ja": "3つの力のうち", "zh": "三项能力中占", "hi": "3 शक्तियों में से", "es": "de los 3 poderes"},
     "powers_fmt": {"en": "{n} of the 3 powers", "ja": "3つの力のうち {n}つ", "zh": "三项能力中占 {n} 项", "hi": "3 शक्तियों में से {n}", "es": "{n} de los 3 poderes"},
+    "attach_error": {
+        "en": "I couldn't read that file — a plain text file works best.",
+        "ja": "そのファイルは読み込めなかった。テキストファイルだと読めるよ。",
+        "zh": "这个文件读不了，纯文本文件最合适。",
+        "hi": "वह फ़ाइल पढ़ नहीं पाया — साधारण टेक्स्ट फ़ाइल सबसे ठीक रहती है।",
+        "es": "No pude leer ese archivo; un archivo de texto simple funciona mejor.",
+    },
     "chips_hint": {
         "en": "Tap one — or just type your answer below.",
         "ja": "ボタンでも、下に言葉で書いてもらっても大丈夫だよ。",
@@ -272,15 +279,19 @@ PAGE = """<!DOCTYPE html>
  .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
  @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
  .inputbar{position:sticky;bottom:0;background:#0f172a;padding:10px 0 4px}
- textarea{flex:1;min-height:52px;max-height:180px;background:#0b1220;color:#e2e8f0;border:1px solid #334155;border-radius:14px;padding:14px;font-size:16px;box-sizing:border-box;resize:none;overflow-y:auto}
- .iconbtn{border-radius:50%;width:48px;height:48px;flex:none;font-size:20px;padding:0;min-height:48px}
- #micbtn{background:#1e293b;border:1px solid #334155}
- #sendbtn{background:#2563eb;font-weight:700}
- #wave{display:none;gap:3px;align-items:flex-end;height:22px;margin:0 0 6px 6px}
- #wave.on{display:flex}
- #wave span{width:4px;height:8px;background:#4ade80;border-radius:2px;animation:wv .9s ease-in-out infinite}
- #wave span:nth-child(2n){animation-delay:.15s}#wave span:nth-child(3n){animation-delay:.3s}#wave span:nth-child(4n){animation-delay:.45s}
- @keyframes wv{0%,100%{height:6px}50%{height:20px}}
+ .composer{display:flex;gap:8px;align-items:flex-end;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:8px}
+ textarea{flex:1;min-height:40px;max-height:180px;background:transparent;color:#e2e8f0;border:0;outline:none;padding:10px 4px;font-size:16px;box-sizing:border-box;resize:none;overflow-y:auto;scrollbar-width:none}
+ textarea::-webkit-scrollbar{display:none}
+ .iconbtn{border-radius:50%;width:44px;height:44px;flex:none;font-size:19px;padding:0;min-height:44px;background:#2563eb}
+ .iconbtn.ghost{background:transparent;border:0;color:#cbd5e1}
+ #recbar{display:none;gap:10px;align-items:center;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:8px}
+ #recbar.on{display:flex}
+ #rectime{color:#94a3b8;font-size:14px;min-width:34px;text-align:center}
+ #wave{flex:1;display:flex;gap:2px;align-items:center;height:26px;overflow:hidden}
+ #wave span{flex:1;min-width:2px;height:5px;background:#60a5fa;border-radius:2px}
+ #wave.cssanim span{animation:wv .9s ease-in-out infinite}
+ #wave.cssanim span:nth-child(2n){animation-delay:.15s}#wave.cssanim span:nth-child(3n){animation-delay:.3s}#wave.cssanim span:nth-child(4n){animation-delay:.45s}
+ @keyframes wv{0%,100%{height:5px}50%{height:20px}}
  @media (min-width:720px){
    main{max-width:920px}
    .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
@@ -299,12 +310,20 @@ PAGE = """<!DOCTYPE html>
 <div id="chat"></div>
 
 <div class="inputbar">
- <div id="wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
- <div class="row" style="margin-top:0">
+ <div id="composer" class="composer">
+  <button id="attachbtn" class="iconbtn ghost" onclick="document.getElementById('filein').click()" title="add a text file">＋</button>
   <textarea id="desc" rows="1"></textarea>
-  <button id="micbtn" class="iconbtn" onclick="toggleMic()" title="voice input">🎤</button>
+  <button id="micbtn" class="iconbtn ghost" onclick="toggleMic()" title="voice input">🎤</button>
   <button id="sendbtn" class="iconbtn" onclick="sendText()" title="check">↑</button>
  </div>
+ <div id="recbar">
+  <button class="iconbtn ghost" onclick="discardVoice()" title="discard">🗑</button>
+  <span id="rectime">0:00</span>
+  <div id="wave"></div>
+  <button class="iconbtn ghost" onclick="stopVoiceKeep()" title="stop">⏹</button>
+  <button class="iconbtn" onclick="sendVoice()" title="send">↑</button>
+ </div>
+ <input type="file" id="filein" hidden accept=".txt,.md,.json,.yaml,.yml,.csv,.log,text/plain,text/markdown,application/json">
 </div>
 
 <p class="muted" data-i18n="footer"></p>
@@ -479,15 +498,7 @@ async function runFollowup(text){
     runCheck("/api/check", {text}, true);
   }
 }
-function stopVoice(){
-  if (listening && recog){
-    recog.onresult = null; recog.onend = null; recog.onerror = null;
-    try{ recog.stop(); }catch(_){}
-    listening = false;
-    document.getElementById("micbtn").textContent = "🎤";
-    document.getElementById("wave").classList.remove("on");
-  }
-}
+function stopVoice(){ if (listening) stopVoiceKeep(); }
 function sendText(){
   const box = document.getElementById("desc");
   const text = box.value.trim(); if (!text) return;
@@ -515,32 +526,86 @@ function setLang(l){
   if (g && !started) g.textContent = t("greeting");
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
-let recog = null, listening = false;
+let recog = null, listening = false, voiceBase = "", recStart = 0, recTimer = null;
+let micStream = null, audioCtx = null, analyser = null;
+function waveEl(){ return document.getElementById("wave"); }
+function buildWave(){
+  const w = waveEl();
+  if (!w.children.length) for (let i = 0; i < 36; i++) w.appendChild(document.createElement("span"));
+}
+function fmtTime(ms){ const s = Math.floor(ms/1000); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+async function startWave(){
+  buildWave();
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    if (!listening){ micStream.getTracks().forEach(tr => tr.stop()); micStream = null; return; }
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser(); analyser.fftSize = 128;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    const bars = waveEl().children;
+    const loop = () => {
+      if (!listening || !analyser) return;
+      analyser.getByteFrequencyData(data);
+      for (let i = 0; i < bars.length; i++){
+        const v = data[Math.floor(i*data.length/bars.length)]/255;
+        bars[i].style.height = (3 + v*22) + "px";
+      }
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }catch(_){ waveEl().classList.add("cssanim"); }
+}
+function stopWave(){
+  if (micStream){ micStream.getTracks().forEach(tr => tr.stop()); micStream = null; }
+  if (audioCtx){ audioCtx.close().catch(() => {}); audioCtx = null; }
+  analyser = null;
+  waveEl().classList.remove("cssanim");
+}
+function endVoiceUI(){
+  listening = false;
+  if (recTimer){ clearInterval(recTimer); recTimer = null; }
+  stopWave();
+  document.getElementById("recbar").classList.remove("on");
+  document.getElementById("composer").style.display = "flex";
+}
 function toggleMic(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return;
-  const btn = document.getElementById("micbtn");
-  if (listening){ recog.stop(); return; }
+  if (listening){ stopVoiceKeep(); return; }
   recog = new SR();
   recog.lang = SPEECH_LANG[lang] || "en-US";
   recog.interimResults = true;
   recog.continuous = true;
   const box = document.getElementById("desc");
-  const base = box.value;
+  voiceBase = box.value;
   recog.onresult = (e) => {
     let s = "";
     for (const r of e.results) s += r[0].transcript;
-    box.value = base + (base && s ? " " : "") + s;
+    box.value = voiceBase + (voiceBase && s ? " " : "") + s;
     autogrow();
   };
-  const wave = document.getElementById("wave");
-  recog.onend = () => { listening = false; btn.textContent = "🎤"; wave.classList.remove("on"); };
-  recog.onerror = () => { listening = false; btn.textContent = "🎤"; wave.classList.remove("on"); };
+  recog.onend = () => { if (listening) endVoiceUI(); };
+  recog.onerror = () => { if (listening) endVoiceUI(); };
   recog.start();
   listening = true;
-  btn.textContent = "⏺";
-  wave.classList.add("on");
+  document.getElementById("composer").style.display = "none";
+  document.getElementById("recbar").classList.add("on");
+  recStart = Date.now();
+  document.getElementById("rectime").textContent = "0:00";
+  recTimer = setInterval(() => { document.getElementById("rectime").textContent = fmtTime(Date.now() - recStart); }, 500);
+  startWave();
 }
+function stopVoiceKeep(){
+  if (recog){ recog.onresult = null; recog.onend = null; recog.onerror = null; try{ recog.stop(); }catch(_){} }
+  endVoiceUI();
+}
+function discardVoice(){
+  document.getElementById("desc").value = voiceBase; autogrow();
+  stopVoiceKeep();
+}
+function sendVoice(){ stopVoiceKeep(); sendText(); }
 function autogrow(){
   const box = document.getElementById("desc");
   box.style.height = "auto";
@@ -557,6 +622,17 @@ document.getElementById("desc").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendText(); }
 });
 document.getElementById("desc").addEventListener("input", autogrow);
+document.getElementById("filein").addEventListener("change", async (e) => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  try{
+    if (f.size > 200000) throw new Error("too big");
+    const text = await f.text();
+    const box = document.getElementById("desc");
+    box.value = (box.value ? box.value + "\n" : "") + text.trim();
+    autogrow(); box.focus();
+  }catch(_){ addBot(esc(t("attach_error"))); }
+});
 </script></body></html>"""
 
 
