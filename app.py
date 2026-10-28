@@ -660,8 +660,8 @@ def _b64_uri(filename: str, mime: str) -> str:
 def page_html() -> bytes:
     data = {"strings": STRINGS, "questions": QUESTIONS}
     html = PAGE.replace("__DATA__", json.dumps(data, ensure_ascii=False))
-    html = html.replace("__MASCOT__", _b64_uri("mascot.b64.txt", "image/webp"))
-    html = html.replace("__FAVICON__", _b64_uri("favicon.b64.txt", "image/webp"))
+    html = html.replace("__MASCOT__", _b64_uri("assets/mascot.b64.txt", "image/webp"))
+    html = html.replace("__FAVICON__", _b64_uri("assets/favicon.b64.txt", "image/webp"))
     return html.encode("utf-8")
 
 
