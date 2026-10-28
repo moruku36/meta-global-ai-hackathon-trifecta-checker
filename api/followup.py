@@ -6,6 +6,8 @@ from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from api_guard import (MAX_MESSAGE_CHARS, check_body_size, check_payload,  # noqa: E402
+                       check_rate, check_text)
 from check import followup  # noqa: E402
 
 
@@ -16,8 +18,13 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             length = int(self.headers.get("Content-Length", "0"))
+            check_body_size(length)
+            check_rate(self.headers)
             payload = json.loads(self.rfile.read(length) or b"{}")
-            result = followup(str(payload.get("message", "")),
+            check_payload(payload.get("profile"))
+            check_payload(payload.get("verdict"))
+            result = followup(check_text(str(payload.get("message", "")),
+                                         MAX_MESSAGE_CHARS),
                               payload.get("profile"), payload.get("verdict"),
                               lang=payload.get("lang", "en"))
             body = json.dumps({"ok": True, "result": result},

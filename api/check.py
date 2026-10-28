@@ -9,6 +9,7 @@ for _cand in (os.path.join(os.path.dirname(__file__), ".."), os.getcwd(), "/var/
     if os.path.isdir(_root) and _root not in sys.path:
         sys.path.insert(0, _root)
 
+from api_guard import check_body_size, check_rate, check_text  # noqa: E402
 from check import extract_and_judge  # noqa: E402
 
 
@@ -16,8 +17,10 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             length = int(self.headers.get("Content-Length", "0"))
+            check_body_size(length)
+            check_rate(self.headers)
             payload = json.loads(self.rfile.read(length) or b"{}")
-            result = extract_and_judge(str(payload.get("text", "")))
+            result = extract_and_judge(check_text(str(payload.get("text", ""))))
             obj, code = {"ok": True, "result": result}, 200
         except Exception as exc:
             obj, code = {"ok": False, "error": str(exc)}, 200
