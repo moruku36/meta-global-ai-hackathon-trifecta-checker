@@ -30,13 +30,6 @@ LANGS = ["en", "ja", "zh", "hi", "es"]
 
 # --- UI strings -------------------------------------------------------------
 STRINGS = {
-    "lead": {
-        "en": "Let's check whether your AI agent is safe to use. Just tell me what it does, in your own words — I'll look at whether a risky mix of powers is hiding in it: reading your <b>private data</b>, taking in <b>content from other people</b>, and <b>sending things out</b>. One of those alone is fine; trouble starts when they all meet in one agent.",
-        "ja": "あなたのAIエージェントが、安全に使えるかどうかを一緒に確かめます。ふだんの言葉で「何をするものか」を教えてくれればOK。危ないのは、<b>大事なデータを読む</b>・<b>よそから来た文を読む</b>・<b>外に送れる</b>、この3つが1つのエージェントに揃ったとき。その組み合わせになっていないか見ていくよ。",
-        "zh": "我们一起看看你的 AI 智能体用起来安不安全。你只要用平时的话说说它是做什么的就行。真正危险的是三种能力凑在同一个智能体上：<b>读到重要数据</b>、<b>读别人发来的内容</b>、<b>能往外发东西</b>。我来帮你检查有没有这种情况。",
-        "hi": "आइए साथ में जाँचें कि आपका AI एजेंट इस्तेमाल के लिए सुरक्षित है या नहीं। बस अपनी भाषा में बताएँ कि यह क्या करता है। खतरा तब होता है जब तीन शक्तियाँ एक ही एजेंट में मिल जाएँ: <b>ज़रूरी डेटा पढ़ना</b>, <b>दूसरों की सामग्री पढ़ना</b>, और <b>बाहर कुछ भेज पाना</b>। मैं देखकर बताऊँगा कि ऐसा मेल तो नहीं है।",
-        "es": "Vamos a comprobar juntos si tu agente de IA es seguro de usar. Solo cuéntame con tus palabras qué hace. El peligro aparece cuando tres poderes se juntan en un mismo agente: <b>leer datos importantes</b>, <b>leer contenido de otras personas</b> y <b>poder enviar cosas fuera</b>. Reviso si esa mezcla está presente.",
-    },
     "verdict_say": {
         "en": "I had a look — the verdict is {v}.",
         "ja": "見てみたよ。判定は {v} だね。",
@@ -250,8 +243,6 @@ PAGE = """<!DOCTYPE html>
  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
  main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
  h1{font-size:24px;margin:0}
- .lead{color:#cbd5e1;font-size:14px;line-height:1.55}
- .lead b{color:#fff}
  .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin:16px 0}
  button{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:12px 16px;font-size:16px;cursor:pointer;min-height:48px}
  fieldset{border:1px solid #334155;border-radius:8px;margin:0 0 14px;padding:6px 12px 10px}
@@ -287,7 +278,7 @@ PAGE = """<!DOCTYPE html>
  @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
  .inputbar{position:sticky;bottom:0;background:#0f172a;padding:10px 0 4px}
  .composer{display:flex;gap:8px;align-items:flex-end;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:8px}
- textarea{flex:1;min-height:40px;max-height:180px;background:transparent;color:#e2e8f0;border:0;outline:none;padding:10px 4px;font-size:16px;box-sizing:border-box;resize:none;overflow-y:auto;scrollbar-width:none}
+ textarea{flex:1;min-height:64px;max-height:180px;background:transparent;color:#e2e8f0;border:0;outline:none;padding:8px 4px;font-size:16px;line-height:1.5;box-sizing:border-box;resize:none;overflow-y:auto;scrollbar-width:none}
  textarea::-webkit-scrollbar{display:none}
  .iconbtn{border-radius:50%;width:44px;height:44px;flex:none;font-size:19px;padding:0;min-height:44px;background:#2563eb}
  .iconbtn.ghost{background:transparent;border:0;color:#cbd5e1}
@@ -312,8 +303,6 @@ PAGE = """<!DOCTYPE html>
    <option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option>
   </select></label>
 </div>
-<p class="lead" data-i18n="lead"></p>
-
 <div id="chat"></div>
 
 <div class="inputbar">
@@ -532,6 +521,7 @@ function setLang(l){
   document.getElementById("desc").placeholder = t("placeholder");
   const g = document.getElementById("greeting");
   if (g && !started) g.innerHTML = esc(t("greeting")).replaceAll("\\n", "<br>");
+  autogrow();
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
 let recog = null, listening = false, voiceBase = "", recStart = 0, recTimer = null;
@@ -630,6 +620,7 @@ document.getElementById("desc").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendText(); }
 });
 document.getElementById("desc").addEventListener("input", autogrow);
+window.addEventListener("resize", autogrow);
 function describeUpload(text, name){
   try{
     const obj = JSON.parse(text);
