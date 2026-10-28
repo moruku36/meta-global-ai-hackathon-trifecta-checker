@@ -32,7 +32,15 @@ SYSTEM = (
     "You convert a free-text description of an AI agent's configuration into a "
     "strict JSON profile. Output JSON only, no commentary. Schema: "
     '{"name": string, '
-    '"data_access": [..], "untrusted_inputs": [..], "outbound": [..], "amplifiers": [..]}. '
+    '"data_access": [..], "untrusted_inputs": [..], "outbound": [..], "amplifiers": [..], '
+    '"unclear": [..]}. '
+    '"unclear" lists aspects the description does NOT settle, using ONLY these '
+    'keys: "reads_private" (unclear whether it reads private data), '
+    '"reads_untrusted" (unclear whether outside content reaches it), '
+    '"sends_out" (unclear whether it can send data or messages out), '
+    '"human_approval" (unclear whether a human approves its actions before '
+    'they run). Include a key only when the description genuinely leaves it '
+    "open; use an empty list when everything is clear. "
     "Use short snake_case tokens. data_access = private data the agent can read "
     "(e.g. gmail_read, email_read, calendar_read, local_files). "
     "untrusted_inputs = channels where outside parties can place content the agent "
@@ -42,6 +50,8 @@ SYSTEM = (
     "amplifiers = risk multipliers (e.g. no_human_approval, auto_execute_code, "
     "long_term_memory_write). Include a category only when the description supports it."
 )
+
+UNCLEAR_KEYS = {"reads_private", "reads_untrusted", "sends_out", "human_approval"}
 
 VOCAB = {
     "data_access": engine.DATA_ACCESS,
@@ -112,9 +122,12 @@ def extract(text: str, model: str = "muse-spark-1.3") -> dict:
         if invalid:
             raise ValueError(f"extraction still invalid after repair: {invalid}")
 
+    unclear = [k for k in (raw.get("unclear") or [])
+               if str(k).strip().lower() in UNCLEAR_KEYS]
     profile = engine.AgentProfile.from_raw(raw)
     verdict = engine.evaluate(profile)
     return {
+        "unclear": unclear,
         "profile": {
             "name": profile.name,
             "data_access": profile.data_access,

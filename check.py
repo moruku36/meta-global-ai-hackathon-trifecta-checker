@@ -26,6 +26,7 @@ def extract_and_judge(text: str, model: str = "muse-spark-1.3") -> dict:
         "mode": "text",
         "profile": extracted["profile"],
         "verdict": extracted["verdict"],
+        "unclear": extracted.get("unclear", []),
         "meta": {"extraction": extracted["extraction"]},
     }
 

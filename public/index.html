@@ -6,12 +6,11 @@
 <style>
  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
  main{max-width:760px;margin:0 auto;padding:20px 16px 48px}
- h1{font-size:26px;margin:8px 0 4px}
- .lead{color:#cbd5e1;font-size:15px;line-height:1.55}
+ h1{font-size:24px;margin:0}
+ .lead{color:#cbd5e1;font-size:14px;line-height:1.55}
  .lead b{color:#fff}
  .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:16px;margin:16px 0}
- textarea{width:100%;min-height:120px;background:#0b1220;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:10px;font-size:16px;box-sizing:border-box}
- button{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:14px 18px;font-size:16px;cursor:pointer;min-height:48px}
+ button{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:12px 16px;font-size:16px;cursor:pointer;min-height:48px}
  fieldset{border:1px solid #334155;border-radius:8px;margin:0 0 14px;padding:6px 12px 10px}
  legend{padding:0 6px;color:#93c5fd;font-size:15px;font-weight:600}
  label{display:flex;align-items:center;gap:10px;padding:9px 4px;cursor:pointer;font-size:16px;border-radius:6px}
@@ -23,17 +22,35 @@
  .Low{background:#4ade80}.Risky{background:#facc15}.Lethal{background:#f87171}
  .elem{display:inline-block;margin:4px 6px 0 0;padding:4px 10px;border-radius:999px;font-size:13px}
  .elem.on{background:#7f1d1d;color:#fecaca}.elem.off{background:#164e2a;color:#bbf7d0}
- pre{white-space:pre-wrap;background:#0b1220;padding:12px;border-radius:8px;font-size:14px;line-height:1.6}
+ pre{white-space:pre-wrap;font-size:14px;line-height:1.6;margin:8px 0 0;font-family:inherit}
  .muted{color:#94a3b8;font-size:13px}
  details.card summary{cursor:pointer;font-size:17px;font-weight:600;padding:2px 0}
- .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
- .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+ .row{display:flex;gap:10px;align-items:flex-end;margin-top:10px}
+ .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+ .brand{display:flex;align-items:center;gap:12px}
+ .mascot{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#f5f0e6}
+ .avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#f5f0e6;flex:none;margin-top:2px}
+ #chat{display:flex;flex-direction:column;gap:12px;margin:18px 0}
+ .msg{display:flex;gap:8px;max-width:100%}
+ .msg.user{justify-content:flex-end}
+ .bubble{border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.55;max-width:85%}
+ .msg.user .bubble{background:#2563eb;color:#fff;border-bottom-right-radius:4px}
+ .msg.bot .bubble{background:#1e293b;border:1px solid #334155;border-bottom-left-radius:4px}
+ .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+ .chip{background:#0b1220;border:1px solid #2563eb;color:#93c5fd;border-radius:999px;padding:8px 14px;font-size:14px;min-height:40px;cursor:pointer}
+ .chip:disabled{opacity:.45;cursor:default}
+ .dots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#93c5fd;margin-right:4px;animation:blink 1.2s infinite}
+ .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+ @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+ .inputbar{position:sticky;bottom:0;background:#0f172a;padding:10px 0 4px}
+ textarea{flex:1;min-height:52px;max-height:140px;background:#0b1220;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:12px;font-size:16px;box-sizing:border-box;resize:vertical}
  @media (min-width:720px){
    main{max-width:920px}
    .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
  }
 </style></head><body><main>
-<div class="topbar"><h1>Trifecta Checker</h1>
+<div class="topbar">
+ <div class="brand"><img class="mascot" src="data:image/webp;base64,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" alt=""><h1>Trifecta Checker</h1></div>
  <label style="padding:0;font-size:14px"><span data-i18n="lang_label"></span>
   <select id="lang" onchange="setLang(this.value)">
    <option value="en">English</option><option value="ja">日本語</option>
@@ -42,14 +59,13 @@
 </div>
 <p class="lead" data-i18n="lead"></p>
 
-<div class="card">
- <div><b data-i18n="describe_title"></b></div>
- <p class="muted" style="margin:6px 0 8px" data-i18n="describe_hint"></p>
- <textarea id="desc"></textarea>
- <div class="row">
-   <button onclick="runText()" style="flex:1" data-i18n="check_btn"></button>
-   <button id="micbtn" onclick="toggleMic()" style="flex:0 0 auto" data-i18n="mic_btn"></button>
-   <span id="busy" class="muted"></span>
+<div id="chat"></div>
+
+<div class="inputbar">
+ <div class="row" style="margin-top:0">
+  <textarea id="desc" rows="2"></textarea>
+  <button id="micbtn" onclick="toggleMic()" title="voice input">🎤</button>
+  <button onclick="sendText()" data-i18n="check_btn"></button>
  </div>
 </div>
 
@@ -61,12 +77,143 @@
  <div class="row"><button onclick="runForm()" style="flex:1" data-i18n="form_btn"></button></div>
 </details>
 
-<div id="out"></div>
 <p class="muted" data-i18n="footer"></p>
 </main><script>
-const DATA = {"strings": {"lead": {"en": "An AI agent gets dangerous when three powers combine: reading <b>private data</b>, taking in <b>content from other people</b>, and <b>sending data out</b>. Describe your agent — a rule engine (not an AI) gives the verdict; Muse Spark only helps read your words and explain the result.", "ja": "AIエージェントが危なくなるのは、3つの力が揃ったときです：<b>秘密のデータを読む</b>、<b>他人からの内容を受け取る</b>、<b>外へ送信する</b>。あなたのエージェントを説明してください。判定はAIではなくルールエンジンが行い、Muse Spark は文章の読み取りと説明だけを手伝います。", "zh": "当三种能力凑齐时，AI 智能体就会变得危险：<b>读取私人数据</b>、<b>接收他人发来的内容</b>、<b>向外发送数据</b>。请描述您的智能体——判定由规则引擎（不是 AI）完成，Muse Spark 只帮忙读懂您的描述并解释结果。", "hi": "AI एजेंट तब खतरनाक बनता है जब तीन शक्तियाँ एक साथ मिलती हैं: <b>निजी डेटा पढ़ना</b>, <b>दूसरों की सामग्री ग्रहण करना</b>, और <b>बाहर डेटा भेजना</b>। अपने एजेंट का वर्णन करें — निर्णय एक नियम-आधारित इंजन (AI नहीं) देता है; Muse Spark सिर्फ़ आपके शब्दों को पढ़ने और परिणाम समझाने में मदद करता है।", "es": "Un agente de IA se vuelve peligroso cuando se combinan tres poderes: <b>leer datos privados</b>, <b>recibir contenido de otras personas</b> y <b>enviar datos fuera</b>. Describe tu agente: el veredicto lo da un motor de reglas (no una IA); Muse Spark solo ayuda a leer tu descripción y explicar el resultado."}, "lang_label": {"en": "Language", "ja": "言語", "zh": "语言", "hi": "भाषा", "es": "Idioma"}, "describe_title": {"en": "Describe your agent", "ja": "エージェントを説明する", "zh": "描述您的智能体", "hi": "अपने एजेंट का वर्णन करें", "es": "Describe tu agente"}, "describe_hint": {"en": "What it can read, what reaches it, what it can send.", "ja": "何を読めるか、何が届くか、何を送れるか。", "zh": "它能读什么、会收到什么、能发送什么。", "hi": "यह क्या पढ़ सकता है, इसे क्या मिलता है, यह क्या भेज सकता है।", "es": "Qué puede leer, qué le llega, qué puede enviar."}, "placeholder": {"en": "Describe your agent here…", "ja": "エージェントの説明をここに書く…", "zh": "在这里描述您的智能体…", "hi": "अपने एजेंट का वर्णन यहाँ लिखें…", "es": "Describe tu agente aquí…"}, "check_btn": {"en": "Check this agent", "ja": "このエージェントをチェック", "zh": "检查这个智能体", "hi": "इस एजेंट की जाँच करें", "es": "Comprobar este agente"}, "mic_btn": {"en": "🎤 Speak", "ja": "🎤 話す", "zh": "🎤 说话", "hi": "🎤 बोलें", "es": "🎤 Hablar"}, "mic_listening": {"en": "🎤 Listening… tap to stop", "ja": "🎤 聞き取り中… もう一度押すと停止", "zh": "🎤 正在聆听… 再点一次停止", "hi": "🎤 सुन रहा है… रोकने के लिए फिर दबाएँ", "es": "🎤 Escuchando… toca para parar"}, "or_title": {"en": "or answer three questions instead", "ja": "代わりに3つの質問に答える", "zh": "或者回答三个问题", "hi": "या तीन सवालों के जवाब दें", "es": "o responde tres preguntas"}, "form_hint": {"en": "Tick everything your agent can do. Leave a question blank if the answer is none.", "ja": "できることに全部チェックしてください。なければ空欄でOKです。", "zh": "把您的智能体能做的都勾上；没有就留空。", "hi": "आपका एजेंट जो कर सकता है, उन सब पर निशान लगाएँ; कुछ नहीं है तो खाली छोड़ दें।", "es": "Marca todo lo que tu agente puede hacer; si no aplica, déjalo en blanco."}, "name_ph": {"en": "Agent name (optional)", "ja": "エージェント名（任意）", "zh": "智能体名称（可选）", "hi": "एजेंट का नाम (वैकल्पिक)", "es": "Nombre del agente (opcional)"}, "form_btn": {"en": "Check with these answers", "ja": "この回答でチェック", "zh": "按这些答案检查", "hi": "इन जवाबों से जाँच करें", "es": "Comprobar con estas respuestas"}, "footer": {"en": "The rating is a simple safety heuristic, not a certification. It focuses on data theft: an agent that can read private data, swallow other people's content, and send data out can be tricked into leaking what it read.", "ja": "この評価は目安であり、認証ではありません。対象は主にデータの盗み出しです：秘密のデータを読めて、他人の内容を取り込めて、外へ送れるエージェントは、だまされて読んだ内容を漏らすことがあります。", "zh": "这个评级只是一个简单的安全参考，不是认证。它主要防的是数据被盗：能读私人数据、能吞下他人内容、又能向外发送的智能体，可能被骗着把读到的内容泄露出去。", "hi": "यह रेटिंग एक सरल सुरक्षा अनुमान है, प्रमाणपत्र नहीं। इसका ध्यान डेटा चोरी पर है: जो एजेंट निजी डेटा पढ़ सके, दूसरों की सामग्री निगल सके और बाहर भेज सके, उसे बहकाकर पढ़ा हुआ डेटा लीक कराया जा सकता है।", "es": "La calificación es una heurística de seguridad sencilla, no una certificación. Se centra en el robo de datos: un agente que puede leer datos privados, tragarse el contenido de otros y enviar datos fuera puede ser engañado para filtrar lo que leyó."}, "busy": {"en": "checking… (a few seconds)", "ja": "チェック中…（数秒）", "zh": "检查中…（几秒）", "hi": "जाँच हो रही है… (कुछ सेकंड)", "es": "Comprobando… (unos segundos)"}, "exp_loading": {"en": "Writing the plain-language explanation…", "ja": "平易な説明を書いています…", "zh": "正在撰写通俗说明…", "hi": "सरल भाषा में व्याख्या लिखी जा रही है…", "es": "Escribiendo la explicación en lenguaje sencillo…"}, "exp_unavailable": {"en": "(Explanation unavailable: ", "ja": "（説明を取得できませんでした：", "zh": "（无法获取说明：", "hi": "(व्याख्या उपलब्ध नहीं: ", "es": "(Explicación no disponible: "}, "error_prefix": {"en": "Could not complete the check: ", "ja": "チェックを完了できませんでした：", "zh": "无法完成检查：", "hi": "जाँच पूरी नहीं हो सकी: ", "es": "No se pudo completar la comprobación: "}, "error_tip": {"en": "Tip: use the three questions instead — they need no AI translation.", "ja": "ヒント：下の3つの質問ならAIの読み取りなしで判定できます。", "zh": "提示：可以用下面的三个问题，不需要 AI 读取。", "hi": "सुझाव: नीचे के तीन सवाल आज़माएँ — इन्हें AI की ज़रूरत नहीं।", "es": "Consejo: usa las tres preguntas de abajo; no necesitan IA."}, "el1": {"en": "Reads private data", "ja": "個人データを読む", "zh": "读取私人数据", "hi": "निजी डेटा पढ़ता है", "es": "Lee datos privados"}, "el2": {"en": "Takes in others' content", "ja": "他人の内容を受け取る", "zh": "接收他人内容", "hi": "दूसरों की सामग्री ग्रहण करता है", "es": "Recibe contenido de otros"}, "el3": {"en": "Can send data out", "ja": "外へ送信できる", "zh": "能向外发送", "hi": "बाहर भेज सकता है", "es": "Puede enviar datos fuera"}, "of_powers": {"en": "of the 3 powers", "ja": "3つの力のうち", "zh": "三项能力中占", "hi": "3 शक्तियों में से", "es": "de los 3 poderes"}, "plus": {"en": "plus:", "ja": "追加：", "zh": "另外：", "hi": "साथ में:", "es": "además:"}}, "groups": [{"field": "data_access", "title": {"en": "Question 1 — What private data can it read?", "ja": "質問1 — 何の個人データを読めますか？", "zh": "问题 1 — 它能读取哪些私人数据？", "hi": "सवाल 1 — यह कौन-सा निजी डेटा पढ़ सकता है?", "es": "Pregunta 1: ¿qué datos privados puede leer?"}, "items": [["gmail_read", {"en": "Gmail", "ja": "Gmail", "zh": "Gmail", "hi": "Gmail", "es": "Gmail"}], ["email_read", {"en": "Other email", "ja": "その他のメール", "zh": "其他邮箱", "hi": "अन्य ईमेल", "es": "Otro correo"}], ["calendar_read", {"en": "Calendar", "ja": "カレンダー", "zh": "日历", "hi": "कैलेंडर", "es": "Calendario"}], ["contacts_read", {"en": "Contacts", "ja": "連絡先", "zh": "联系人", "hi": "संपर्क", "es": "Contactos"}], ["drive_read", {"en": "Cloud drive (Google Drive etc.)", "ja": "クラウドドライブ（Google Driveなど）", "zh": "云端硬盘（Google Drive 等）", "hi": "क्लाउड ड्राइव (Google Drive आदि)", "es": "Nube (Google Drive, etc.)"}], ["local_files", {"en": "Files on the computer", "ja": "パソコン内のファイル", "zh": "电脑里的文件", "hi": "कंप्यूटर की फ़ाइलें", "es": "Archivos del ordenador"}], ["message_read", {"en": "Chat / message history", "ja": "チャット・メッセージ履歴", "zh": "聊天/消息记录", "hi": "चैट / संदेश इतिहास", "es": "Historial de chat/mensajes"}]]}, {"field": "untrusted_inputs", "title": {"en": "Question 2 — What can reach it from other people?", "ja": "質問2 — 他人から何が届きますか？", "zh": "问题 2 — 他人的哪些内容能到达它？", "hi": "सवाल 2 — दूसरों से क्या इस तक पहुँच सकता है?", "es": "Pregunta 2: ¿qué puede llegarle de otras personas?"}, "items": [["email_body", {"en": "Emails it receives", "ja": "届くメール", "zh": "它收到的邮件", "hi": "इसे मिलने वाले ईमेल", "es": "Correos que recibe"}], ["web_browse", {"en": "Web pages it opens", "ja": "開くWebページ", "zh": "它打开的网页", "hi": "इसके खोले वेब पेज", "es": "Páginas web que abre"}], ["uploaded_files", {"en": "Files people upload", "ja": "人がアップロードしたファイル", "zh": "别人上传的文件", "hi": "लोगों द्वारा अपलोड फ़ाइलें", "es": "Archivos que sube la gente"}], ["chat_input", {"en": "Chat messages from users", "ja": "ユーザーからのチャット", "zh": "用户发来的聊天消息", "hi": "उपयोगकर्ताओं के चैट संदेश", "es": "Mensajes de chat de usuarios"}], ["webhook", {"en": "Webhooks / triggers from other systems", "ja": "Webhook・他システムからの起動", "zh": "Webhook / 其他系统的触发", "hi": "Webhook / अन्य सिस्टम के ट्रिगर", "es": "Webhooks / activadores de otros sistemas"}]]}, {"field": "outbound", "title": {"en": "Question 3 — What can it send out or do outside?", "ja": "質問3 — 外へ何を送れますか・何ができますか？", "zh": "问题 3 — 它能向外发送什么、做什么？", "hi": "सवाल 3 — यह बाहर क्या भेज सकता है या कर सकता है?", "es": "Pregunta 3: ¿qué puede enviar o hacer fuera?"}, "items": [["email_send", {"en": "Send email", "ja": "メールを送る", "zh": "发送邮件", "hi": "ईमेल भेजना", "es": "Enviar correos"}], ["chat_post", {"en": "Post messages in chat channels", "ja": "チャットに投稿する", "zh": "在聊天频道发言", "hi": "चैट चैनलों में पोस्ट करना", "es": "Publicar en canales de chat"}], ["message_send", {"en": "Send direct messages", "ja": "DMを送る", "zh": "发送私信", "hi": "सीधे संदेश भेजना", "es": "Enviar mensajes directos"}], ["http_post", {"en": "Send data to a web address", "ja": "Webアドレスへデータを送る", "zh": "向网址发送数据", "hi": "वेब पते पर डेटा भेजना", "es": "Enviar datos a una dirección web"}], ["code_execute_outbound", {"en": "Run code that sends data out", "ja": "データを送るコードを実行する", "zh": "运行会向外发送数据的代码", "hi": "बाहर डेटा भेजने वाला कोड चलाना", "es": "Ejecutar código que envía datos"}]]}, {"field": "amplifiers", "title": {"en": "One more thing — any of these?", "ja": "もう1つ — 当てはまるものは？", "zh": "再问一个 — 有以下情况吗？", "hi": "एक और बात — इनमें से कुछ है?", "es": "Una cosa más: ¿algo de esto?"}, "items": [["no_human_approval", {"en": "It acts without asking a person first", "ja": "人の確認なしで動く", "zh": "不经人确认就行动", "hi": "बिना व्यक्ति से पूछे काम करता है", "es": "Actúa sin pedir permiso a una persona"}], ["auto_execute_code", {"en": "It runs code by itself", "ja": "自分でコードを実行する", "zh": "自己运行代码", "hi": "खुद कोड चलाता है", "es": "Ejecuta código por sí solo"}], ["long_term_memory_write", {"en": "It remembers things long-term", "ja": "長期的に記憶する", "zh": "长期记忆事情", "hi": "चीज़ें लंबे समय तक याद रखता है", "es": "Recuerda cosas a largo plazo"}]]}]};
+const DATA = {"strings": {"lead": {"en": "An AI agent gets dangerous when three powers combine: reading <b>private data</b>, taking in <b>content from other people</b>, and <b>sending data out</b>. Tell me about your agent — a rule engine (not an AI) gives the verdict; Muse Spark only helps read your words and explain the result.", "ja": "AIエージェントが危なくなるのは、3つの力が揃ったときです：<b>秘密のデータを読む</b>、<b>他人からの内容を受け取る</b>、<b>外へ送信する</b>。あなたのエージェントのことを教えてください。判定はAIではなくルールエンジンが行い、Muse Spark は文章の読み取りと説明だけを手伝います。", "zh": "当三种能力凑齐时，AI 智能体就会变得危险：<b>读取私人数据</b>、<b>接收他人发来的内容</b>、<b>向外发送数据</b>。请把您的智能体告诉我——判定由规则引擎（不是 AI）完成，Muse Spark 只帮忙读懂您的描述并解释结果。", "hi": "AI एजेंट तब खतरनाक बनता है जब तीन शक्तियाँ एक साथ मिलती हैं: <b>निजी डेटा पढ़ना</b>, <b>दूसरों की सामग्री ग्रहण करना</b>, और <b>बाहर डेटा भेजना</b>। मुझे अपने एजेंट के बारे में बताएँ — निर्णय एक नियम-आधारित इंजन (AI नहीं) देता है; Muse Spark सिर्फ़ आपके शब्दों को पढ़ने और परिणाम समझाने में मदद करता है।", "es": "Un agente de IA se vuelve peligroso cuando se combinan tres poderes: <b>leer datos privados</b>, <b>recibir contenido de otras personas</b> y <b>enviar datos fuera</b>. Cuéntame sobre tu agente: el veredicto lo da un motor de reglas (no una IA); Muse Spark solo ayuda a leer tu descripción y explicar el resultado."}, "lang_label": {"en": "Language", "ja": "言語", "zh": "语言", "hi": "भाषा", "es": "Idioma"}, "greeting": {"en": "Hi! Tell me about your agent — what it can read, what reaches it, and what it can send. I'll check the combination.", "ja": "こんにちは！あなたのエージェントについて教えてください。何を読めて、何が届いて、何を送れるか。それで組み合わせを診断します。", "zh": "您好！请告诉我您的智能体能读什么、会收到什么、能发送什么，我来检查这个组合。", "hi": "नमस्ते! अपने एजेंट के बारे में बताएँ — यह क्या पढ़ सकता है, इसे क्या मिलता है, यह क्या भेज सकता है। मैं संयोजन की जाँच करूँगा।", "es": "¡Hola! Cuéntame sobre tu agente: qué puede leer, qué le llega y qué puede enviar. Revisaré la combinación."}, "placeholder": {"en": "Describe your agent here…", "ja": "エージェントの説明をここに書く…", "zh": "在这里描述您的智能体…", "hi": "अपने एजेंट का वर्णन यहाँ लिखें…", "es": "Describe tu agente aquí…"}, "check_btn": {"en": "Check", "ja": "チェック", "zh": "检查", "hi": "जाँचें", "es": "Comprobar"}, "mic_btn": {"en": "🎤", "ja": "🎤", "zh": "🎤", "hi": "🎤", "es": "🎤"}, "thinking": {"en": "Thinking…", "ja": "考え中…", "zh": "思考中…", "hi": "सोच रहा हूँ…", "es": "Pensando…"}, "yes": {"en": "Yes", "ja": "はい", "zh": "是", "hi": "हाँ", "es": "Sí"}, "no": {"en": "No", "ja": "いいえ", "zh": "不是", "hi": "नहीं", "es": "No"}, "unsure": {"en": "Not sure", "ja": "わからない", "zh": "不确定", "hi": "पता नहीं", "es": "No lo sé"}, "q_reads_private": {"en": "One thing I couldn't tell: can it read private data (mail, files, calendar…)?", "ja": "1つ分からなかった点：秘密のデータ（メール・ファイル・予定など）を読めますか？", "zh": "有一点没看出来：它能读取私人数据（邮件、文件、日历等）吗？", "hi": "एक बात स्पष्ट नहीं हुई: क्या यह निजी डेटा (मेल, फ़ाइलें, कैलेंडर…) पढ़ सकता है?", "es": "Algo no quedó claro: ¿puede leer datos privados (correo, archivos, calendario…)?"}, "q_reads_untrusted": {"en": "Can content from other people reach it (incoming mail, web pages, uploads)?", "ja": "他人からの内容（届くメール・Webページ・アップロードしたファイル）が届きますか？", "zh": "别人的内容（收到的邮件、网页、上传的文件）会到达它吗？", "hi": "क्या दूसरों की सामग्री (आने वाले मेल, वेब पेज, अपलोड की गई फ़ाइलें) इस तक पहुँचती है?", "es": "¿Le llega contenido de otras personas (correos recibidos, páginas web, archivos subidos)?"}, "q_sends_out": {"en": "Can it send anything out on its own (mail, posts, data to a server)?", "ja": "自分から外へ送れますか（メール送信・投稿・サーバーへの送信）？", "zh": "它能自己向外发送东西吗（发邮件、发帖、向服务器发送数据）？", "hi": "क्या यह खुद बाहर कुछ भेज सकता है (मेल, पोस्ट, सर्वर पर डेटा)?", "es": "¿Puede enviar algo fuera por su cuenta (correos, publicaciones, datos a un servidor)?"}, "q_human_approval": {"en": "Before it acts, does a person check and approve first?", "ja": "動く前に、人が確認して承認しますか？", "zh": "行动之前，会有人先检查并批准吗？", "hi": "काम करने से पहले क्या कोई व्यक्ति जाँचकर मंज़ूरी देता है?", "es": "Antes de actuar, ¿una persona lo revisa y aprueba primero?"}, "verdict_updated": {"en": "Updated verdict:", "ja": "更新後の判定：", "zh": "更新后的判定：", "hi": "अद्यतन निर्णय:", "es": "Veredicto actualizado:"}, "split_btn": {"en": "Show a safer split", "ja": "安全な分け方を見る", "zh": "看看更安全的拆分", "hi": "सुरक्षित बँटवारा देखें", "es": "Ver una división más segura"}, "restart_btn": {"en": "Start over", "ja": "最初から", "zh": "重新开始", "hi": "फिर से शुरू करें", "es": "Empezar de nuevo"}, "split_intro": {"en": "If the powers are split across two agents, the ratings become:", "ja": "力を2つのエージェントに分けると、判定はこうなります：", "zh": "把能力拆到两个智能体上，评级会变成：", "hi": "शक्तियों को दो एजेंटों में बाँटने पर रेटिंग ऐसी होगी:", "es": "Si los poderes se dividen entre dos agentes, las calificaciones serían:"}, "var_no_out": {"en": "reader only (cannot send)", "ja": "読むだけ（送信なし）", "zh": "只读（不能发送）", "hi": "सिर्फ़ पढ़ने वाला (भेज नहीं सकता)", "es": "solo lectura (no puede enviar)"}, "var_no_untrusted": {"en": "sender only (no outside content)", "ja": "送るだけ（外の内容なし）", "zh": "只发送（不接收外部内容）", "hi": "सिर्फ़ भेजने वाला (बाहरी सामग्री नहीं)", "es": "solo envío (sin contenido externo)"}, "form_note": {"en": "(Answered the three questions)", "ja": "（3つの質問に回答）", "zh": "（已回答三个问题）", "hi": "(तीन सवालों के जवाब दिए)", "es": "(Respondió las tres preguntas)"}, "or_title": {"en": "or answer three questions instead", "ja": "代わりに3つの質問に答える", "zh": "或者回答三个问题", "hi": "या तीन सवालों के जवाब दें", "es": "o responde tres preguntas"}, "form_hint": {"en": "Tick everything your agent can do. Leave a question blank if the answer is none.", "ja": "できることに全部チェックしてください。なければ空欄でOKです。", "zh": "把您的智能体能做的都勾上；没有就留空。", "hi": "आपका एजेंट जो कर सकता है, उन सब पर निशान लगाएँ; कुछ नहीं है तो खाली छोड़ दें।", "es": "Marca todo lo que tu agente puede hacer; si no aplica, déjalo en blanco."}, "name_ph": {"en": "Agent name (optional)", "ja": "エージェント名（任意）", "zh": "智能体名称（可选）", "hi": "एजेंट का नाम (वैकल्पिक)", "es": "Nombre del agente (opcional)"}, "form_btn": {"en": "Check with these answers", "ja": "この回答でチェック", "zh": "按这些答案检查", "hi": "इन जवाबों से जाँच करें", "es": "Comprobar con estas respuestas"}, "footer": {"en": "The rating is a simple safety heuristic, not a certification. It focuses on data theft: an agent that can read private data, swallow other people's content, and send data out can be tricked into leaking what it read.", "ja": "この評価は目安であり、認証ではありません。対象は主にデータの盗み出しです：秘密のデータを読めて、他人の内容を取り込めて、外へ送れるエージェントは、だまされて読んだ内容を漏らすことがあります。", "zh": "这个评级只是一个简单的安全参考，不是认证。它主要防的是数据被盗：能读私人数据、能吞下他人内容、又能向外发送的智能体，可能被骗着把读到的内容泄露出去。", "hi": "यह रेटिंग एक सरल सुरक्षा अनुमान है, प्रमाणपत्र नहीं। इसका ध्यान डेटा चोरी पर है: जो एजेंट निजी डेटा पढ़ सके, दूसरों की सामग्री निगल सके और बाहर भेज सके, उसे बहकाकर पढ़ा हुआ डेटा लीक कराया जा सकता है।", "es": "La calificación es una heurística de seguridad sencilla, no una certificación. Se centra en el robo de datos: un agente que puede leer datos privados, tragarse el contenido de otros y enviar datos fuera puede ser engañado para filtrar lo que leyó."}, "exp_loading": {"en": "Writing the plain-language explanation…", "ja": "平易な説明を書いています…", "zh": "正在撰写通俗说明…", "hi": "सरल भाषा में व्याख्या लिखी जा रही है…", "es": "Escribiendo la explicación en lenguaje sencillo…"}, "exp_unavailable": {"en": "(Explanation unavailable: ", "ja": "（説明を取得できませんでした：", "zh": "（无法获取说明：", "hi": "(व्याख्या उपलब्ध नहीं: ", "es": "(Explicación no disponible: "}, "error_prefix": {"en": "Could not complete the check: ", "ja": "チェックを完了できませんでした：", "zh": "无法完成检查：", "hi": "जाँच पूरी नहीं हो सकी: ", "es": "No se pudo completar la comprobación: "}, "error_tip": {"en": "Tip: use the three questions below instead — they need no AI translation.", "ja": "ヒント：下の3つの質問ならAIの読み取りなしで判定できます。", "zh": "提示：可以用下面的三个问题，不需要 AI 读取。", "hi": "सुझाव: नीचे के तीन सवाल आज़माएँ — इन्हें AI की ज़रूरत नहीं।", "es": "Consejo: usa las tres preguntas de abajo; no necesitan IA."}, "el1": {"en": "Reads private data", "ja": "個人データを読む", "zh": "读取私人数据", "hi": "निजी डेटा पढ़ता है", "es": "Lee datos privados"}, "el2": {"en": "Takes in others' content", "ja": "他人の内容を受け取る", "zh": "接收他人内容", "hi": "दूसरों की सामग्री ग्रहण करता है", "es": "Recibe contenido de otros"}, "el3": {"en": "Can send data out", "ja": "外へ送信できる", "zh": "能向外发送", "hi": "बाहर भेज सकता है", "es": "Puede enviar datos fuera"}, "of_powers": {"en": "of the 3 powers", "ja": "3つの力のうち", "zh": "三项能力中占", "hi": "3 शक्तियों में से", "es": "de los 3 poderes"}, "plus": {"en": "plus:", "ja": "追加：", "zh": "另外：", "hi": "साथ में:", "es": "además:"}}, "questions": {"reads_private": "q_reads_private", "reads_untrusted": "q_reads_untrusted", "sends_out": "q_sends_out", "human_approval": "q_human_approval"}, "groups": [{"field": "data_access", "title": {"en": "Question 1 — What private data can it read?", "ja": "質問1 — 何の個人データを読めますか？", "zh": "问题 1 — 它能读取哪些私人数据？", "hi": "सवाल 1 — यह कौन-सा निजी डेटा पढ़ सकता है?", "es": "Pregunta 1: ¿qué datos privados puede leer?"}, "items": [["gmail_read", {"en": "Gmail", "ja": "Gmail", "zh": "Gmail", "hi": "Gmail", "es": "Gmail"}], ["email_read", {"en": "Other email", "ja": "その他のメール", "zh": "其他邮箱", "hi": "अन्य ईमेल", "es": "Otro correo"}], ["calendar_read", {"en": "Calendar", "ja": "カレンダー", "zh": "日历", "hi": "कैलेंडर", "es": "Calendario"}], ["contacts_read", {"en": "Contacts", "ja": "連絡先", "zh": "联系人", "hi": "संपर्क", "es": "Contactos"}], ["drive_read", {"en": "Cloud drive (Google Drive etc.)", "ja": "クラウドドライブ（Google Driveなど）", "zh": "云端硬盘（Google Drive 等）", "hi": "क्लाउड ड्राइव (Google Drive आदि)", "es": "Nube (Google Drive, etc.)"}], ["local_files", {"en": "Files on the computer", "ja": "パソコン内のファイル", "zh": "电脑里的文件", "hi": "कंप्यूटर की फ़ाइलें", "es": "Archivos del ordenador"}], ["message_read", {"en": "Chat / message history", "ja": "チャット・メッセージ履歴", "zh": "聊天/消息记录", "hi": "चैट / संदेश इतिहास", "es": "Historial de chat/mensajes"}]]}, {"field": "untrusted_inputs", "title": {"en": "Question 2 — What can reach it from other people?", "ja": "質問2 — 他人から何が届きますか？", "zh": "问题 2 — 他人的哪些内容能到达它？", "hi": "सवाल 2 — दूसरों से क्या इस तक पहुँच सकता है?", "es": "Pregunta 2: ¿qué puede llegarle de otras personas?"}, "items": [["email_body", {"en": "Emails it receives", "ja": "届くメール", "zh": "它收到的邮件", "hi": "इसे मिलने वाले ईमेल", "es": "Correos que recibe"}], ["web_browse", {"en": "Web pages it opens", "ja": "開くWebページ", "zh": "它打开的网页", "hi": "इसके खोले वेब पेज", "es": "Páginas web que abre"}], ["uploaded_files", {"en": "Files people upload", "ja": "人がアップロードしたファイル", "zh": "别人上传的文件", "hi": "लोगों द्वारा अपलोड फ़ाइलें", "es": "Archivos que sube la gente"}], ["chat_input", {"en": "Chat messages from users", "ja": "ユーザーからのチャット", "zh": "用户发来的聊天消息", "hi": "उपयोगकर्ताओं के चैट संदेश", "es": "Mensajes de chat de usuarios"}], ["webhook", {"en": "Webhooks / triggers from other systems", "ja": "Webhook・他システムからの起動", "zh": "Webhook / 其他系统的触发", "hi": "Webhook / अन्य सिस्टम के ट्रिगर", "es": "Webhooks / activadores de otros sistemas"}]]}, {"field": "outbound", "title": {"en": "Question 3 — What can it send out or do outside?", "ja": "質問3 — 外へ何を送れますか・何ができますか？", "zh": "问题 3 — 它能向外发送什么、做什么？", "hi": "सवाल 3 — यह बाहर क्या भेज सकता है या कर सकता है?", "es": "Pregunta 3: ¿qué puede enviar o hacer fuera?"}, "items": [["email_send", {"en": "Send email", "ja": "メールを送る", "zh": "发送邮件", "hi": "ईमेल भेजना", "es": "Enviar correos"}], ["chat_post", {"en": "Post messages in chat channels", "ja": "チャットに投稿する", "zh": "在聊天频道发言", "hi": "चैट चैनलों में पोस्ट करना", "es": "Publicar en canales de chat"}], ["message_send", {"en": "Send direct messages", "ja": "DMを送る", "zh": "发送私信", "hi": "सीधे संदेश भेजना", "es": "Enviar mensajes directos"}], ["http_post", {"en": "Send data to a web address", "ja": "Webアドレスへデータを送る", "zh": "向网址发送数据", "hi": "वेब पते पर डेटा भेजना", "es": "Enviar datos a una dirección web"}], ["code_execute_outbound", {"en": "Run code that sends data out", "ja": "データを送るコードを実行する", "zh": "运行会向外发送数据的代码", "hi": "बाहर डेटा भेजने वाला कोड चलाना", "es": "Ejecutar código que envía datos"}]]}, {"field": "amplifiers", "title": {"en": "One more thing — any of these?", "ja": "もう1つ — 当てはまるものは？", "zh": "再问一个 — 有以下情况吗？", "hi": "एक और बात — इनमें से कुछ है?", "es": "Una cosa más: ¿algo de esto?"}, "items": [["no_human_approval", {"en": "It acts without asking a person first", "ja": "人の確認なしで動く", "zh": "不经人确认就行动", "hi": "बिना व्यक्ति से पूछे काम करता है", "es": "Actúa sin pedir permiso a una persona"}], ["auto_execute_code", {"en": "It runs code by itself", "ja": "自分でコードを実行する", "zh": "自己运行代码", "hi": "खुद कोड चलाता है", "es": "Ejecuta código por sí solo"}], ["long_term_memory_write", {"en": "It remembers things long-term", "ja": "長期的に記憶する", "zh": "长期记忆事情", "hi": "चीज़ें लंबे समय तक याद रखता है", "es": "Recuerda cosas a largo plazo"}]]}]};
+const MASCOT = "data:image/webp;base64,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";
 let lang = "en";
+let profile = null, verdict = null, busy = false;
 function t(key){ return (DATA.strings[key] || {})[lang] || (DATA.strings[key] || {})["en"] || ""; }
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function scrollDown(){ window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"}); }
+function addUser(text){
+  const d = document.createElement("div"); d.className = "msg user";
+  d.innerHTML = '<div class="bubble"></div>';
+  d.querySelector(".bubble").textContent = text;
+  document.getElementById("chat").appendChild(d); scrollDown(); return d;
+}
+function addBot(html){
+  const d = document.createElement("div"); d.className = "msg bot";
+  d.innerHTML = '<img class="avatar" src="'+MASCOT+'" alt=""><div class="bubble">'+html+"</div>";
+  document.getElementById("chat").appendChild(d); scrollDown(); return d;
+}
+function addThinking(){
+  return addBot('<span class="muted">'+esc(t("thinking"))+'</span> <span class="dots"><span></span><span></span><span></span></span>');
+}
+function verdictHTML(v, prefix){
+  const el = [[t("el1"), v.elements.data_access], [t("el2"), v.elements.untrusted_input], [t("el3"), v.elements.outbound]];
+  let h = (prefix ? '<div style="margin-bottom:6px">'+esc(prefix)+"</div>" : "") +
+    '<span class="badge '+v.verdict+'">'+v.verdict+'</span> '+
+    '<span class="muted">'+v.element_count+" "+t("of_powers")+
+    (v.amplifiers.length ? " · "+t("plus")+" "+v.amplifiers.length : "")+'</span><div style="margin-top:6px">';
+  for (const [name,on] of el)
+    h += '<span class="elem '+(on?"on":"off")+'">'+(on?"✓ ":"✗ ")+name+"</span>";
+  return h + "</div>";
+}
+async function post(url, body){
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  const d = await r.json();
+  if (!d.ok) throw new Error(d.error || "failed");
+  return d.result;
+}
+function chipsHTML(items){
+  let h = '<div class="chips">';
+  items.forEach((it, i) => { h += '<button class="chip" data-chip="'+i+'">'+esc(it.label)+"</button>"; });
+  return h + "</div>";
+}
+function wireChips(bubbleEl, items){
+  bubbleEl.querySelectorAll("[data-chip]").forEach(btn => {
+    btn.onclick = () => {
+      bubbleEl.querySelectorAll("[data-chip]").forEach(b => b.disabled = true);
+      items[Number(btn.dataset.chip)].fn();
+    };
+  });
+}
+const EDITS = {
+  reads_private: (p, ans) => { if (ans === "yes" && !p.data_access.includes("local_files")) p.data_access.push("local_files"); },
+  reads_untrusted: (p, ans) => { if (ans === "yes" && !p.untrusted_inputs.includes("web_browse")) p.untrusted_inputs.push("web_browse"); },
+  sends_out: (p, ans) => { if (ans === "yes" && !p.outbound.includes("http_post")) p.outbound.push("http_post"); },
+  human_approval: (p, ans) => {
+    if (ans === "no" && !p.amplifiers.includes("no_human_approval")) p.amplifiers.push("no_human_approval");
+    if (ans === "yes") p.amplifiers = p.amplifiers.filter(a => a !== "no_human_approval");
+  },
+};
+async function askQuestions(keys){
+  for (const key of keys){
+    const qkey = DATA.questions[key]; if (!qkey) continue;
+    const ans = await new Promise(resolve => {
+      const m = addBot(esc(t(qkey)) + chipsHTML([
+        {label: t("yes")}, {label: t("no")}, {label: t("unsure")}]));
+      wireChips(m.querySelector(".bubble"), [
+        {label: t("yes"), fn: () => resolve("yes")},
+        {label: t("no"), fn: () => resolve("no")},
+        {label: t("unsure"), fn: () => resolve("unsure")},
+      ]);
+    });
+    addUser(t(ans === "yes" ? "yes" : ans === "no" ? "no" : "unsure"));
+    EDITS[key](profile, ans);
+  }
+  const think = addThinking();
+  try{
+    const r = await post("/api/check-profile", {profile});
+    think.querySelector(".bubble").innerHTML = verdictHTML(r.verdict, t("verdict_updated"));
+    verdict = r.verdict;
+  }catch(e){ think.querySelector(".bubble").textContent = t("error_prefix") + e.message; }
+}
+async function explainFlow(){
+  const m = addBot('<span class="muted">'+esc(t("exp_loading"))+"</span>");
+  try{
+    const exp = await post("/api/explain", {verdict, profile, lang});
+    m.querySelector(".bubble").innerHTML = "<pre></pre>";
+    m.querySelector("pre").textContent = exp.explanation;
+  }catch(e){
+    m.querySelector(".bubble").textContent = t("exp_unavailable") + e.message + ")";
+  }
+  const acts = addBot(chipsHTML([{label: t("split_btn")}, {label: t("restart_btn")}]));
+  wireChips(acts.querySelector(".bubble"), [
+    {label: t("split_btn"), fn: showSplit},
+    {label: t("restart_btn"), fn: () => location.reload()},
+  ]);
+}
+async function showSplit(){
+  const think = addThinking();
+  try{
+    const a = JSON.parse(JSON.stringify(profile)); a.outbound = [];
+    const b = JSON.parse(JSON.stringify(profile)); b.untrusted_inputs = [];
+    const ra = await post("/api/check-profile", {profile: a});
+    const rb = await post("/api/check-profile", {profile: b});
+    think.querySelector(".bubble").innerHTML = esc(t("split_intro")) +
+      '<div style="margin-top:8px">'+esc(t("var_no_out"))+' → <span class="badge '+ra.verdict.verdict+'">'+ra.verdict.verdict+"</span></div>"+
+      '<div style="margin-top:6px">'+esc(t("var_no_untrusted"))+' → <span class="badge '+rb.verdict.verdict+'">'+rb.verdict.verdict+"</span></div>";
+  }catch(e){ think.querySelector(".bubble").textContent = t("error_prefix") + e.message; }
+}
+async function runCheck(url, body, isText){
+  if (busy) return; busy = true;
+  const think = addThinking();
+  try{
+    const result = await post(url, body);
+    profile = result.profile; verdict = result.verdict;
+    think.querySelector(".bubble").innerHTML = verdictHTML(verdict, "");
+    if (isText && result.unclear && result.unclear.length) await askQuestions(result.unclear);
+    await explainFlow();
+  }catch(e){
+    think.querySelector(".bubble").innerHTML = esc(t("error_prefix") + String(e.message)) +
+      '<br><span class="muted">'+esc(t("error_tip"))+"</span>";
+  }finally{ busy = false; scrollDown(); }
+}
+function sendText(){
+  const box = document.getElementById("desc");
+  const text = box.value.trim(); if (!text || busy) return;
+  box.value = "";
+  addUser(text);
+  runCheck("/api/check", {text}, true);
+}
+function runForm(){
+  const p = {name: document.getElementById("pname").value, data_access:[], untrusted_inputs:[], outbound:[], amplifiers:[]};
+  document.querySelectorAll("input[type=checkbox]:checked").forEach(c => p[c.dataset.f].push(c.value));
+  addUser(t("form_note"));
+  runCheck("/api/check-profile", {profile: p}, false);
+}
 function buildGroups(){
   let h = '<div class="qgrid">';
   for (const g of DATA.groups){
@@ -83,42 +230,6 @@ function setLang(l){
   document.getElementById("desc").placeholder = t("placeholder");
   document.getElementById("pname").placeholder = t("name_ph");
   buildGroups();
-}
-function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
-function render(d, explanation){
-  const v = d.verdict;
-  const el = [[t("el1"), v.elements.data_access], [t("el2"), v.elements.untrusted_input], [t("el3"), v.elements.outbound]];
-  let h = '<div class="card"><span class="badge '+v.verdict+'">'+v.verdict+'</span> '+
-          '<span class="muted">'+v.element_count+" "+t("of_powers")+
-          (v.amplifiers.length ? " · "+t("plus")+" "+v.amplifiers.length : "")+'</span><div>';
-  for (const [name,on] of el)
-    h += '<span class="elem '+(on?"on":"off")+'">'+(on?"✓ ":"✗ ")+name+"</span>";
-  h += '</div><pre id="exp">'+esc(explanation)+'</pre></div>';
-  document.getElementById("out").innerHTML = h;
-  document.getElementById("out").scrollIntoView({behavior:"smooth"});
-}
-async function post(url, body){
-  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
-  const d = await r.json();
-  if (!d.ok) throw new Error(d.error || "failed");
-  return d.result;
-}
-async function run(url, body){
-  const busy = document.getElementById("busy"); busy.textContent = t("busy");
-  try{
-    const result = await post(url, body);
-    render(result, t("exp_loading"));
-    busy.textContent = "";
-    try{
-      const exp = await post("/api/explain", {verdict: result.verdict, profile: result.profile, lang});
-      document.getElementById("exp").textContent = exp.explanation;
-    }catch(e){
-      document.getElementById("exp").textContent = t("exp_unavailable")+e.message+")";
-    }
-  }catch(e){
-    document.getElementById("out").innerHTML = '<div class="card">'+esc(t("error_prefix")+String(e.message))+
-      '<br><span class="muted">'+esc(t("error_tip"))+"</span></div>";
-  }finally{ busy.textContent = ""; }
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
 let recog = null, listening = false;
@@ -138,19 +249,17 @@ function toggleMic(){
     for (const r of e.results) s += r[0].transcript;
     box.value = base + (base && s ? " " : "") + s;
   };
-  recog.onend = () => { listening = false; btn.textContent = t("mic_btn"); };
-  recog.onerror = () => { listening = false; btn.textContent = t("mic_btn"); };
+  recog.onend = () => { listening = false; btn.textContent = "🎤"; };
+  recog.onerror = () => { listening = false; btn.textContent = "🎤"; };
   recog.start();
   listening = true;
-  btn.textContent = t("mic_listening");
-}
-function runText(){ run("/api/check", {text: document.getElementById("desc").value}); }
-function runForm(){
-  const p = {name: document.getElementById("pname").value, data_access:[], untrusted_inputs:[], outbound:[], amplifiers:[]};
-  document.querySelectorAll("input[type=checkbox]:checked").forEach(c => p[c.dataset.f].push(c.value));
-  run("/api/check-profile", {profile: p});
+  btn.textContent = "⏺";
 }
 setLang("en");
+addBot(esc(t("greeting")));
 if (!(window.SpeechRecognition || window.webkitSpeechRecognition))
   document.getElementById("micbtn").style.display = "none";
+document.getElementById("desc").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) sendText();
+});
 </script></body></html>

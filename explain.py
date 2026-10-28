@@ -39,7 +39,9 @@ SYSTEMS = {
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'How to fix it' - apply the separation proposal from the JSON, plus one "
         "specific control for each amplifier listed. 4) 'Bottom line' - one sentence. "
-        "Output the explanation text only, with the four headings."
+        "5) 'Next steps' - 2-3 concrete actions the owner can take right away, in "
+        "order, one short imperative line each (e.g. 'Turn off automatic sending'). "
+        "Output the explanation text only, with the five headings."
     ),
     "ja": (
         "あなたは、AIエージェントの決定的なセキュリティ診断の結果を、その持ち主に説明する役割です。"
@@ -50,7 +52,9 @@ SYSTEMS = {
         "のどれが揃っているか。根拠はJSONの具体項目を挙げる。"
         "2)「起こりうること」— 列挙された能力だけで成立する、具体的な攻撃シナリオを1つ。"
         "3)「直し方」— JSONの分離提案をこのエージェント向けに具体化し、増幅要因があれば1つずつ対処を書く。"
-        "4)「まとめ」— 1文。説明文だけを出力すること。"
+        "4)「まとめ」— 1文。"
+        "5)「次にやること」— 持ち主が今すぐできる具体的な行動を、順番に2〜3個、各1行の短い命令形で"
+        "（例：「自動送信をオフにする」）。説明文だけを出力すること。"
     ),
 }
 
@@ -69,7 +73,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) '如何修复' - apply the separation proposal from the JSON, plus one "
         "specific control for each amplifier listed. 4) '总结' - one sentence. "
-        "Output the explanation text only, with the four headings."
+        "5) '下一步' - 2-3 concrete actions the owner can take right away, in "
+        "order, one short imperative line each. "
+        "Output the explanation text only, with the five headings."
     ),
     "hi": (
         "You explain the result of a deterministic security check of an AI agent "
@@ -84,7 +90,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'इसे कैसे ठीक करें' - apply the separation proposal from the JSON, plus "
         "one specific control for each amplifier listed. 4) 'सारांश' - one sentence. "
-        "Output the explanation text only, with the four headings."
+        "5) 'अगले कदम' - 2-3 concrete actions the owner can take right away, in "
+        "order, one short imperative line each. "
+        "Output the explanation text only, with the five headings."
     ),
     "es": (
         "You explain the result of a deterministic security check of an AI agent "
@@ -99,7 +107,9 @@ SYSTEMS.update({
         "concrete attack scenario that uses only the listed capabilities. "
         "3) 'Cómo solucionarlo' - apply the separation proposal from the JSON, plus "
         "one specific control for each amplifier listed. 4) 'Conclusión' - one "
-        "sentence. Output the explanation text only, with the four headings."
+        "sentence. 5) 'Próximos pasos' - 2-3 concrete actions the owner can take "
+        "right away, in order, one short imperative line each. "
+        "Output the explanation text only, with the five headings."
     ),
 })
 
