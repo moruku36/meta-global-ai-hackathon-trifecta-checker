@@ -6,6 +6,8 @@
 
 मेटा ग्लोबल एआई डेवलपर हैकाथॉन (अक्टूबर–नवंबर 2026) के लिए निर्मित।
 
+<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+
 **लाइव डेमो:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 
 ## उपयोग का अनुभव कैसा है
@@ -44,6 +46,27 @@ Trifecta Checker एजेंट प्रोफ़ाइल को इस त�
 ```
 description ──▶ extraction ──▶ rule engine ──▶ explanation
                (Muse Spark)    (deterministic)  (Muse Spark)
+```
+
+वही प्रवाह, आरेख के रूप में:
+
+```mermaid
+flowchart LR
+    A["You describe your agent<br/>type, voice, or file upload"] --> B["Muse Spark<br/>extraction"]
+    B --> C["Capability profile<br/>JSON"]
+    C --> D{"Deterministic rule engine<br/>trifecta_checker.py"}
+    D --> E["Verdict<br/>Low / Risky / Lethal"]
+    E --> F["Trafica explains<br/>Muse Spark"]
+    F --> G["Follow-ups<br/>split and re-check"]
+    G -.-> C
+    classDef input fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    classDef llm fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef engine fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef neutral fill:#f3f4f6,stroke:#6b7280,color:#111827
+    class A input
+    class B,F llm
+    class C,G neutral
+    class D,E engine
 ```
 
 - **निर्णय कभी एलएलएम से नहीं आता।** एक छोटा नियतात्मक नियम इंजन (`trifecta_checker.py`) मूल्यांकन नियम लागू करता है, इसलिए एक ही प्रोफ़ाइल को हमेशा एक ही निर्णय मिलता है। यही दोहराव ही असली बात है।
