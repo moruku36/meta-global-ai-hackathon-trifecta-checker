@@ -6,6 +6,8 @@
 
 Meta Global AI Developer Hackathon（2026年10〜11月）向けに作りました。
 
+<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+
 **ライブデモ:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 
 
@@ -45,6 +47,27 @@ Trifecta Checkerはエージェントの内容をこう判定します。
 ```
 description ──▶ extraction ──▶ rule engine ──▶ explanation
                (Muse Spark)    (deterministic)  (Muse Spark)
+```
+
+同じ流れを図にすると、こうなります：
+
+```mermaid
+flowchart LR
+    A["You describe your agent<br/>type, voice, or file upload"] --> B["Muse Spark<br/>extraction"]
+    B --> C["Capability profile<br/>JSON"]
+    C --> D{"Deterministic rule engine<br/>trifecta_checker.py"}
+    D --> E["Verdict<br/>Low / Risky / Lethal"]
+    E --> F["Trafica explains<br/>Muse Spark"]
+    F --> G["Follow-ups<br/>split and re-check"]
+    G -.-> C
+    classDef input fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    classDef llm fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef engine fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef neutral fill:#f3f4f6,stroke:#6b7280,color:#111827
+    class A input
+    class B,F llm
+    class C,G neutral
+    class D,E engine
 ```
 
 - **判定をLLMには任せません**。 小さな決まったルールエンジン（`trifecta_checker.py`）が判定ルールを当てはめるので、同じ内容ならいつも同じ結果になります。この再現性こそが大事な点です。
