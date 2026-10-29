@@ -6,7 +6,11 @@
 
 Meta Global AI Developer Hackathon（2026年10〜11月）向けに作りました。
 
-<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+<p align="center">
+  <img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+  <br>
+  <sub>三要素チェックのマスコット「トラフィカ」</sub>
+</p>
 
 **ライブデモ:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 

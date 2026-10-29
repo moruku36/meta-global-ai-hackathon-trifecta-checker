@@ -8,7 +8,11 @@ and how to split it up if it is not.
 
 Built for the Meta Global AI Developer Hackathon (Oct–Nov 2026).
 
-<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+<p align="center">
+  <img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+  <br>
+  <sub>Trafica, the Trifecta Checker mascot</sub>
+</p>
 
 **Live demo:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 

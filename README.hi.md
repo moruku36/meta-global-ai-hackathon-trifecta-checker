@@ -6,7 +6,11 @@
 
 मेटा ग्लोबल एआई डेवलपर हैकाथॉन (अक्टूबर–नवंबर 2026) के लिए निर्मित।
 
-<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+<p align="center">
+  <img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+  <br>
+  <sub>Trafica, Trifecta Checker का शुभंकर</sub>
+</p>
 
 **लाइव डेमो:** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 

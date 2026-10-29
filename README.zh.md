@@ -8,7 +8,11 @@ Trifecta Checker 会告诉你这种能力组合是否安全、原因是什么，
 
 为 Meta Global AI Developer Hackathon（2026 年 10 月–11 月）打造。
 
-<img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+<p align="center">
+  <img src="assets/media-generation-trifecta-mascot-0-0c6defdc-03ab-4cf0-ae77-68cb0c855374.webp" alt="Trafica, the Trifecta Checker mascot" width="200">
+  <br>
+  <sub>Trafica：三要素检查的吉祥物</sub>
+</p>
 
 **在线演示：** https://meta-global-ai-hackathon-trifecta-c.vercel.app/
 
