@@ -64,7 +64,7 @@ current profile/verdict in page state and re-sends it with each call.
   reads_untrusted, sends_out, human_approval} — naming what the
   description leaves open.
 - **`explain.py` — verdict → friendly explanation.** Fixed headings in
-  five languages (en/ja/zh/hi/es): Verdict / What could happen / How to
+  six languages (en/ja/zh/hi/es/ko): Verdict / What could happen / How to
   fix it / Bottom line / Next steps. Warm, everyday-words tone; "Next
   steps" are gentle suggestions ending with ONE inviting question.
 - **`check.py` — pipeline + follow-up conversation.** Splits the flow into

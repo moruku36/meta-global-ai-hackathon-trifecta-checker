@@ -44,7 +44,7 @@ Meta Model API — Muse Spark 1.3 (api.meta.ai, OpenAI-compatible)
   - ルール： 3要素そろえば**Lethal**、2要素、または1要素＋増幅要素なら**Risky**、それ以外は**Low**。すべての判定には根拠（どのトークンがどの要素になったか）と分離案（読み取り専用のReader＋承認つき・許可リストつきのSender）が付きます。
 - **`extract.py` — ガードレール付きのSpark抽出**。自由文→閉じた語彙に限定したprofile JSONに変換します。不正なトークンが出たら、許可語彙を見せてONE回だけ修復コールをかけ、それでも収まらなければ推測せずにはっきり失敗します。結果には`unclear`な点の一覧も含みます。{reads_private,
   reads_untrusted, sends_out, human_approval}のうち無害化した一部だけを使い、説明文で何が開いたままかを名指しします。
-- **`explain.py` — 判定→やさしい説明**。5言語（en/ja/zh/hi/es）で見出し固定：Verdict／What could happen／How to fix it／Bottom line／Next steps。あたたかく、日常言葉の口調です。「Next steps」はやさしい提案で、最後にONEつの誘う質問で締めます。
+- **`explain.py` — 判定→やさしい説明**。6言語（en/ja/zh/hi/es/ko）で見出し固定：Verdict／What could happen／How to fix it／Bottom line／Next steps。あたたかく、日常言葉の口調です。「Next steps」はやさしい提案で、最後にONEつの誘う質問で締めます。
 - **`check.py` — パイプライン＋その後の会話**。流れを`extract_and_judge`（LLM呼び出し1回）、`judge_profile`（0回）、`explain_result`（1回、失敗しても致命的でない）、`followup`（SparkがUI言語で返答、平易な言葉のみで生トークンは出さない。モデルは末尾に`[[SPLIT]]`と付けて分割ビューを出したり、別のエージェントの話になったら`[[NEW]]`と答えたりできる）に分けます。
 - **`llm.py` — 共通のSpark呼び出し**。ホスト環境では`META_API_KEY`環境変数→api.meta.aiへの直接呼び出し。ローカル開発ではヘルパーのサブプロセス経由で保管されたキーにフォールバックします（キーはコードにもログにも出ません）。
 - **`app.py` — Webクライアントの生成**。静的HTML 1ページ：チャット専用UI、マスコット（Trafica）、UI全体を切り替える言語選択、音声入力（Web Speech API）、ファイル添付、そして後述の聞き返しロジック。MCP設定JSON（例：Claude Desktop／MCPクライアントの設定）を添付すると、クライアント側でサーバー内容の平易な説明に要約してから通常の抽出に回します。そのため実際のエージェント設定をそのままチェックできます（`fixtures/sample_mcp_config.json`）。ページフッターにはヒューリスティックである旨の注意書きと、デモがパートナークレジットで動いている旨のプライバシーメモがあります。
@@ -78,7 +78,7 @@ Meta Model API — Muse Spark 1.3 (api.meta.ai, OpenAI-compatible)
 - 実設定の取り込みは基本的なもの：MCP設定JSONをクライアント側で要約します（サーバー名、コマンド、URL）。他の書き出し形式（アシスタント設定、エージェントフレームワーク設定）は未対応です。
 - 共有できる判定カード／チームビューはまだありません。
 - 音声入力はブラウザのSpeechRecognition対応に依存します。
-- 現在の5言語以外への対応は今後の課題です。
+- 現在の6言語以外への対応は今後の課題です。
 
 ## 8. ハッカソン評価基準への対応（自己評価）
 
