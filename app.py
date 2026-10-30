@@ -28,7 +28,7 @@ from api_guard import (MAX_MESSAGE_CHARS, check_body_size, check_payload,  # noq
 from check import explain_result, extract_and_judge, followup, judge_profile  # noqa: E402
 
 BASE = Path(__file__).resolve().parent
-LANGS = ["en", "ja", "zh", "hi", "es"]
+LANGS = ["en", "ja", "zh", "hi", "es", "ko"]
 
 # --- UI strings -------------------------------------------------------------
 STRINGS = {
@@ -222,6 +222,110 @@ GROUPS = [
      ]},
 ]
 
+
+# --- Text diet + Korean support (2026-10-30) ---
+_SHORT = {
+ "greeting": {
+  "en": "Hi, I'm Trafica! 👋 I check one risky mix: an agent that can read your private data, read outside content, and send things out can be tricked into leaking your data.\nJust tell me what your agent does — e.g. \"It reads my email and replies for me.\" You can also attach a file with +, or tap 🎤 and talk.",
+  "ja": "こんにちは、トラフィカだよ👋 危ない組み合わせをチェックするよ：大事なデータを読めて、外から来た文を読めて、外に送れるエージェントは、だまされてデータを漏らすことがあるんだ。\n下の欄に、あなたのエージェントが何をするか書いてみて。たとえば「メールを読んで返信もする」。＋でファイル添付、🎤で音声でもOKだよ。",
+  "zh": "嗨，我是 Trafica！👋 我只检查一种危险组合：能读取你的私人数据、读取外部内容、还能向外发送的智能体，可能会被骗而泄露你的数据。\n告诉我你的智能体会做什么——比如“它帮我读邮件并回复。” 你也可以用 + 添加文件，或点 🎤 直接说。",
+  "hi": "हाय, मैं Trafica हूँ! 👋 मैं एक खतरनाक मेल की जाँच करती हूँ: जो एजेंट तुम्हारा निजी डेटा पढ़ सकता है, बाहर की सामग्री पढ़ सकता है, और बाहर भेज सकता है, उसे बहकाकर तुम्हारा डेटा लीक कराया जा सकता है।\nबस बताओ तुम्हारा एजेंट क्या करता है — जैसे \"यह मेरा ईमेल पढ़कर जवाब देता है।\" तुम + से फाइल जोड़ सकते हो, या 🎤 दबाकर बोल सकते हो।",
+  "es": "¡Hola, soy Trafica! 👋 Reviso una sola mezcla riesgosa: un agente que puede leer tus datos privados, leer contenido externo y enviar cosas puede ser engañado para filtrar tus datos.\nCuéntame qué hace tu agente — p. ej. «Lee mi correo y responde por mí». También puedes adjuntar un archivo con +, o tocar 🎤 y hablar."
+ },
+ "footer": {
+  "en": "Simple safety heuristic, not a certification — it flags agents that can read private data, take in outside content, and send data out.",
+  "ja": "この評価は目安であり、認証ではありません。大事なデータを読めて、外の内容を取り込めて、外へ送れるエージェントが、だまされて漏らす危険を見ます。",
+  "zh": "简单的安全经验法则，不是认证——它会标记那些能读取私人数据、接收外部内容并向外发送数据的智能体。",
+  "hi": "साधारण सुरक्षा अनुमान, प्रमाणन नहीं — यह उन एजेंटों को बताता है जो निजी डेटा पढ़ सकते हैं, बाहरी सामग्री लेते हैं, और डेटा बाहर भेज सकते हैं।",
+  "es": "Heurística de seguridad simple, no una certificación — detecta agentes que pueden leer datos privados, recibir contenido externo y enviar datos."
+ },
+ "privacy_note": {
+  "en": "Demo note: this demo runs on partner credits, and your input may be used to improve the service. Please use sample descriptions, not real private data.",
+  "ja": "デモ版の注意：このデモはパートナーのクレジットで動いているため、入力内容がサービス改善に使われることがあります。実データではなく、サンプルで試してね。",
+  "zh": "演示说明：本演示使用合作伙伴额度运行，你的输入可能被用于改进服务。请使用示例描述，不要用真实私人数据。",
+  "hi": "डेमो नोट: यह डेमो पार्टनर क्रेडिट पर चलता है, और तुम्हारा इनपुट सेवा सुधारने में इस्तेमाल हो सकता है। कृपया असली निजी डेटा नहीं, नमूना विवरण इस्तेमाल करो।",
+  "es": "Nota de demo: esta demo funciona con créditos de socios, y tu entrada podría usarse para mejorar el servicio. Usa descripciones de ejemplo, no datos privados reales."
+ }
+}
+for _key, _langs in _SHORT.items():
+    STRINGS[_key].update(_langs)
+_KO_STRINGS = {
+ "verdict_say": "봤어 — 판정은 {v}야.",
+ "lang_label": "언어",
+ "greeting": "안녕, 난 트라피카야! 👋 내가 확인하는 건 딱 하나의 위험한 조합이야: 네 private한 데이터를 읽고, 외부 내용을 읽고, 밖으로 보낼 수 있는 에이전트는 속아서 데이터를 샐 수 있어.\n네 에이전트가 뭘 하는지 말해줘 — 예를 들면 \"내 이메일을 읽고 답장해 줘.\" +로 파일을 첨부하거나, 🎤를 눌러 말해도 돼.",
+ "check_btn": "확인하기",
+ "mic_btn": "🎤",
+ "thinking": "보고 있어…",
+ "yes": "응",
+ "no": "아니",
+ "unsure": "잘 모르겠어",
+ "q_reads_private": "한 가지만 물어볼게: 네 중요한 데이터 — 메일, 파일, 캘린더 같은 거 — 읽을 수 있어?",
+ "q_reads_untrusted": "그리고 다른 사람에게서 온 게 닿아? 들어오는 메일, 웹페이지, 사람들이 올린 파일 같은 거?",
+ "q_sends_out": "또 — 혼자서 밖으로 보낼 수 있어? 메일 보내기, 올리기, 서버로 데이터 보내기 같은 거 말이야.",
+ "q_human_approval": "마지막으로: 뭔가 하기 전에 네가 먼저 OK 해줘야 돼?",
+ "verdict_updated": "네 답을 반영하면, 지금은 이렇게 보여:",
+ "split_btn": "나누면 어떻게 돼?",
+ "restart_btn": "다른 에이전트 확인하기",
+ "split_intro": "힘을 두 에이전트로 나누면 이렇게 돼:",
+ "var_no_out": "읽기만 (보내기 불가)",
+ "var_no_untrusted": "보내기만 (외부 내용 없음)",
+ "form_note": "(세 질문에 답변 완료)",
+ "or_title": "아니면 세 질문에 답해줘",
+ "form_hint": "네 에이전트가 할 수 있는 건 다 체크해. 해당 없으면 비워 둬.",
+ "name_ph": "에이전트 이름 (선택)",
+ "form_btn": "이 답변으로 확인하기",
+ "footer": "간단한 안전 휴리스틱이야, 인증은 아니야 — private 데이터 읽기, 외부 내용 받기, 데이터 보내기가 다 되는 에이전트를 알려줘.",
+ "privacy_note": "데모 안내: 이 데모는 파트너 크레딧으로 돌아가고, 입력은 서비스 개선에 쓰일 수 있어. 진짜 private 데이터 말고 예시 설명을 써줘.",
+ "exp_loading": "알기 쉽게 풀어쓰는 중…",
+ "exp_unavailable": "(설명을 볼 수 없어: ",
+ "error_prefix": "확인을 끝내지 못했어: ",
+ "error_tip": "팁: 뭘 읽을 수 있고, 뭐가 닿고, 뭘 보낼 수 있는지 조금 더 자세히 적고 다시 해봐.",
+ "el1": "네 중요한 데이터를 읽을 수 있음",
+ "el2": "다른 사람이 보낸 걸 읽음",
+ "el3": "밖으로 보낼 수 있음",
+ "of_powers": "3가지 힘 중",
+ "powers_fmt": "3가지 힘 중 {n}개",
+ "attach_error": "그 파일은 읽지 못했어 — 일반 텍스트 파일이 가장 좋아.",
+ "chips_hint": "하나 눌러 — 아니면 아래에 직접 답을 써줘.",
+ "plus": "플러스:"
+}
+for _key, _val in _KO_STRINGS.items():
+    STRINGS[_key]["ko"] = _val
+_KO_TITLES = ["질문 1 — 어떤 private 데이터를 읽을 수 있어?", "질문 2 — 다른 사람에게서 뭐가 닿아?", "질문 3 — 밖으로 뭘 보내거나 할 수 있어?", "마지막으로 — 이런 것도 있어?"]
+_KO_ITEMS = [
+ [
+  "Gmail",
+  "기타 이메일",
+  "캘린더",
+  "연락처",
+  "클라우드 드라이브 (구글 드라이브 등)",
+  "컴퓨터에 있는 파일",
+  "채팅 / 메시지 기록"
+ ],
+ [
+  "받는 이메일",
+  "여는 웹페이지",
+  "사람들이 올린 파일",
+  "사용자의 채팅 메시지",
+  "웹훅 / 다른 시스템의 트리거"
+ ],
+ [
+  "이메일 보내기",
+  "채팅 채널에 메시지 올리기",
+  "다이렉트 메시지 보내기",
+  "웹 주소로 데이터 보내기",
+  "데이터를 밖으로 보내는 코드 실행"
+ ],
+ [
+  "사람에게 묻지 않고 행동함",
+  "혼자서 코드를 실행함",
+  "오래 기억함"
+ ]
+]
+for _group, _title, _items in zip(GROUPS, _KO_TITLES, _KO_ITEMS):
+    _group["title"]["ko"] = _title
+    for (_token, _label), _ko in zip(_group["items"], _items):
+        _label["ko"] = _ko
 QUESTIONS = {
     "reads_private": "q_reads_private",
     "reads_untrusted": "q_reads_untrusted",
@@ -295,7 +399,7 @@ PAGE = """<!DOCTYPE html>
  <label style="padding:0;font-size:14px"><span data-i18n="lang_label"></span>
   <select id="lang" onchange="setLang(this.value)">
    <option value="en">English</option><option value="ja">日本語</option>
-   <option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option>
+   <option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option><option value="ko">한국어</option>
   </select></label>
 </div>
 <div id="chat"></div>

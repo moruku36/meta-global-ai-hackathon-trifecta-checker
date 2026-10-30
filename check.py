@@ -73,7 +73,7 @@ FOLLOWUP_SYSTEM = (
 )
 
 LANG_NAMES = {"en": "English", "ja": "Japanese", "zh": "Simplified Chinese",
-              "hi": "Hindi", "es": "Spanish"}
+              "hi": "Hindi", "es": "Spanish", "ko": "Korean"}
 
 
 def followup(message: str, profile: dict | None, verdict: dict | None,
