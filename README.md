@@ -1,6 +1,6 @@
 # Trifecta Checker
 
-**English** · [日本語](README.ja.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md)
+**English** · [日本語](README.ja.md) · [中文](README.zh.md) · [हिन्दी](README.hi.md) · [Español](README.es.md) · [한국어](README.ko.md)
 
 **A pre-flight safety check for AI agents.** Describe what your agent can do —
 Trifecta Checker tells you whether that combination of powers is safe, why,
@@ -35,8 +35,8 @@ security vocabulary needed:
    a read-only Reader and an approval-gated Sender — with fresh verdicts for
    each half.
 
-The whole conversation works in five languages: English, Japanese, Chinese,
-Hindi and Spanish.
+The whole conversation works in six languages: English, Japanese, Chinese,
+Hindi, Spanish and Korean.
 
 ## The idea: the lethal trifecta
 
@@ -96,7 +96,7 @@ flowchart LR
   always gets the same verdict. That reproducibility is the point.
 - **Muse Spark's job is translation**: turning a free-text description into
   the engine's structured profile, turning the verdict back into plain
-  language in five languages with one concrete attack scenario and a fix,
+  language in six languages with one concrete attack scenario and a fix,
   and carrying the follow-up conversation after the verdict.
 - **Extraction is validated.** The engine has a closed vocabulary. If the
   model invents a token, the output is sent back once with the allowed
