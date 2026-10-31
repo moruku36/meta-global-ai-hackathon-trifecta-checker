@@ -39,6 +39,13 @@ STRINGS = {
         "hi": "मैंने देख लिया — निर्णय है {v}।",
         "es": "Ya lo revisé: el veredicto es {v}.",
     },
+    "venn_hint": {"en": "Run a check and the three powers light up here.", "ja": "チェックしてみて！3つのパワーがここで光るよ", "zh": "运行检查，三种能力会在此点亮。", "hi": "चेक चलाओ, तीनों पावर्स यहाँ जलेंगी।", "es": "Haz un check y se iluminan los 3 poderes."},
+    "chip_safe": {"en": "Try: a safe setup", "ja": "試す：安全な構成", "zh": "试试：安全配置", "hi": "आज़माएं: सुरक्षित सेटअप", "es": "Probar: setup seguro"},
+    "chip_risky": {"en": "Try: a risky setup", "ja": "試す：危険な構成", "zh": "试试：风险配置", "hi": "आज़माएं: जोखिम वाला सेटअप", "es": "Probar: setup riesgoso"},
+    "chip_lethal": {"en": "Try: a lethal setup", "ja": "試す：致命的な構成", "zh": "试试：致命配置", "hi": "आज़माएं: घातक सेटअप", "es": "Probar: setup letal"},
+    "sample_safe": {"en": "A personal notes assistant. It reads only my own notes on this device, never opens links or files from other people, and cannot send messages or post anything anywhere.", "ja": "個人用のメモ助手。自分の端末にある自分のメモだけを読み、他の人から来たリンクやファイルは開かず、メッセージを送ったり投稿したりはできません。", "zh": "个人笔记助手。只读本机自己的笔记，不打开他人链接或文件，不能发消息或发布内容。", "hi": "पर्सनल नोट्स असिस्टेंट। सिर्फ इस डिवाइस के मेरे नोट्स पढ़ता है, दूसरों के लिंक/फाइल नहीं खोलता, मैसेज/पोस्ट नहीं कर सकता।", "es": "Asistente de notas personal. Solo lee mis notas en este dispositivo, nunca abre enlaces/archivos ajenos y no puede enviar mensajes ni publicar."},
+    "sample_risky": {"en": "A research assistant. It reads my documents and browses web pages and forum posts to summarize them. It cannot send messages or change anything outside.", "ja": "調査アシスタント。私の文書を読み、ウェブページやフォーラムの投稿を閲覧して要約します。メッセージを送ったり、外部のものを変更したりはできません。", "zh": "研究助手。读取我的文档并浏览网页和论坛帖子来总结。不能发消息或更改外部内容。", "hi": "रिसर्च असिस्टेंट। मेरे दस्तावेज़ पढ़ता है, वेब पेज-फोरम देखकर सार देता है। मैसेज नहीं भेज सकता, बाहर कुछ बदल नहीं सकता।", "es": "Asistente de investigación. Lee mis documentos y resume páginas web y foros. No puede enviar mensajes ni cambiar nada externo."},
+    "sample_lethal": {"en": "An inbox agent. It reads my private email and files, opens links and attachments people send me, and can reply to emails and post to Slack on my behalf.", "ja": "受信箱エージェント。私の非公開のメールやファイルを読み、人から送られてきたリンクや添付ファイルを開き、私の代わりにメールに返信したりSlackに投稿したりできます。", "zh": "收件箱代理。读取我的私人邮件和文件，打开他人发来的链接和附件，可代我回邮件并发到Slack。", "hi": "इनबॉक्स एजेंट। मेरी प्राइवेट ईमेल-फाइलें पढ़ता है, मिले लिंक/अटैचमेंट खोलता है, मेरी ओर से ईमेल जवाब-Slack पोस्ट कर सकता है।", "es": "Agente de inbox. Lee mi email privado y archivos, abre enlaces y adjuntos recibidos, y puede responder emails y publicar en Slack por mí."},
     "lang_label": {"en": "Language", "ja": "言語", "zh": "语言", "hi": "भाषा", "es": "Idioma"},
     "greeting": {
         "en": "Hi, I'm Trafica, your Trifecta Checker! 👋\nI look at three powers an AI agent can have: reading your private data, reading things that arrive from other people, and sending things out. When one agent has all three, a trick hidden in an incoming message can make it leak your data — that's the mix I check for you.\nStarting is easy. Just write what your agent does in the box below — for example: \"It reads my email and sends replies for me.\" You can also tap + to load a text file, or tap 🎤 and just talk to me.",
@@ -287,7 +294,14 @@ _KO_STRINGS = {
  "powers_fmt": "3가지 힘 중 {n}개",
  "attach_error": "그 파일은 읽지 못했어 — 일반 텍스트 파일이 가장 좋아.",
  "chips_hint": "하나 눌러 — 아니면 아래에 직접 답을 써줘.",
- "plus": "플러스:"
+ "plus": "플러스:",
+ "venn_hint": "검사하면 세 가지 파워가 여기에 켜져요.",
+ "chip_safe": "시도: 안전한 설정",
+ "chip_risky": "시도: 위험한 설정",
+ "chip_lethal": "시도: 치명적인 설정",
+ "sample_safe": "개인 메모 도우미. 이 기기의 내 메모만 읽고, 타인의 링크/파일은 열지 않으며, 메시지 전송·게시 불가.",
+ "sample_risky": "리서치 도우미. 내 문서를 읽고 웹·포럼 글을 요약함. 메시지 전송·외부 변경 불가.",
+ "sample_lethal": "받은편지함 에이전트. 내 비공개 메일·파일을 읽고, 받은 링크·첨부파일을 열며, 대신 메일 답장·Slack 게시 가능.",
 }
 for _key, _val in _KO_STRINGS.items():
     STRINGS[_key]["ko"] = _val
@@ -389,6 +403,98 @@ PAGE = """<!DOCTYPE html>
  #wave.cssanim span{animation:wv .9s ease-in-out infinite}
  #wave.cssanim span:nth-child(2n){animation-delay:.15s}#wave.cssanim span:nth-child(3n){animation-delay:.3s}#wave.cssanim span:nth-child(4n){animation-delay:.45s}
  @keyframes wv{0%,100%{height:5px}50%{height:20px}}
+ #trifectaPanel{
+   background:#1e293b;
+   border:1px solid #334155;
+   border-radius:12px;
+   padding:16px;
+   margin:16px 0;
+   display:flex;
+   gap:16px;
+   align-items:center;
+   flex-wrap:wrap;
+   transition:border-color .3s;
+ }
+ #trifectaPanel.lethal{
+   border-color:#f87171;
+   box-shadow:0 0 0 1px #f87171,0 0 22px rgba(248,113,113,.35);
+ }
+
+ .vcircle{
+   fill:rgba(100,116,139,.18);
+   stroke:#64748b;
+   stroke-width:2;
+   transition:all .3s;
+ }
+ .vcircle.on.el-data{fill:rgba(37,99,235,.30);stroke:#2563eb;}
+ .vcircle.on.el-untrusted{fill:rgba(147,51,234,.30);stroke:#9333ea;}
+ .vcircle.on.el-outbound{fill:rgba(234,88,12,.30);stroke:#ea580c;}
+
+ #vcenter{fill:#ef4444;opacity:0;pointer-events:none;}
+ #vcenter.on{opacity:.55;animation:vpulse 1.1s ease-in-out infinite;}
+ @keyframes vpulse{0%,100%{opacity:.25}50%{opacity:.65}}
+
+ .vlegend{
+   display:flex;
+   flex-direction:column;
+   gap:4px;
+   font-size:13px;
+ }
+ .vlegend .dot{
+   display:inline-block;
+   width:10px;
+   height:10px;
+   border-radius:50%;
+   margin-right:6px;
+ }
+
+ .traficaBox{margin:0;text-align:center;}
+ .traficaWrap{position:relative;display:inline-block;border-radius:50%;}
+ #traficaImg{
+   width:96px;
+   height:96px;
+   border-radius:50%;
+   object-fit:cover;
+   background:#f5f0e6;
+   display:block;
+ }
+ .traficaWrap.st-risky #traficaImg{
+   box-shadow:0 0 0 3px #f59e0b,0 0 18px rgba(245,158,11,.55);
+ }
+ .traficaWrap.st-lethal #traficaImg{
+   box-shadow:0 0 0 3px #ef4444,0 0 20px rgba(239,68,68,.65);
+   animation:vpulse2 1.1s ease-in-out infinite;
+ }
+ @keyframes vpulse2{
+   0%,100%{box-shadow:0 0 0 3px #ef4444,0 0 10px rgba(239,68,68,.4)}
+   50%{box-shadow:0 0 0 4px #ef4444,0 0 26px rgba(239,68,68,.8)}
+ }
+ .traficaWrap.shake{animation:tshake .45s ease-in-out 1;}
+ @keyframes tshake{
+   0%,100%{transform:translateX(0)}
+   25%{transform:translateX(-4px)}
+   75%{transform:translateX(4px)}
+ }
+
+ .tbadge{
+   position:absolute;
+   top:-2px;
+   right:-2px;
+   width:26px;
+   height:26px;
+   border-radius:50%;
+   color:#0b1220;
+   font-weight:800;
+   font-size:16px;
+   line-height:26px;
+   text-align:center;
+ }
+ .tbadge.risky{background:#f59e0b;}
+ .tbadge.lethal{background:#ef4444;color:#fff;}
+
+ #traficaStatus{margin-top:6px;max-width:180px;}
+
+ .samplebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 8px;}
  @media (min-width:720px){
    main{max-width:920px}
    .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
@@ -402,9 +508,35 @@ PAGE = """<!DOCTYPE html>
    <option value="zh">中文（简体）</option><option value="hi">हिन्दी</option><option value="es">Español</option><option value="ko">한국어</option>
   </select></label>
 </div>
+<section id="trifectaPanel">
+  <svg id="venn" viewBox="0 0 200 172" width="200" height="172" role="img" aria-label="trifecta diagram">
+    <circle id="vc1" class="vcircle el-data" cx="72" cy="64" r="52"></circle>
+    <circle id="vc2" class="vcircle el-untrusted" cx="128" cy="64" r="52"></circle>
+    <circle id="vc3" class="vcircle el-outbound" cx="100" cy="112" r="52"></circle>
+    <circle id="vcenter" cx="100" cy="80" r="17"></circle>
+  </svg>
+  <div class="vlegend">
+    <span><span class="dot" style="background:#2563eb"></span><span data-i18n="el1"></span></span>
+    <span><span class="dot" style="background:#9333ea"></span><span data-i18n="el2"></span></span>
+    <span><span class="dot" style="background:#ea580c"></span><span data-i18n="el3"></span></span>
+    <span id="vennHint" class="muted" data-i18n="venn_hint"></span>
+  </div>
+  <figure class="traficaBox">
+    <div class="traficaWrap" id="traficaWrap">
+      <img id="traficaImg" src="__MASCOT__" alt="Trafica">
+      <span id="traficaBadge" class="tbadge risky" hidden>!</span>
+    </div>
+    <figcaption id="traficaStatus" class="muted"></figcaption>
+  </figure>
+</section>
 <div id="chat"></div>
 
 <div class="inputbar">
+ <div id="samplebar" class="samplebar">
+  <button class="chip" data-i18n="chip_safe" onclick="fillSample('safe')"></button>
+  <button class="chip" data-i18n="chip_risky" onclick="fillSample('risky')"></button>
+  <button class="chip" data-i18n="chip_lethal" onclick="fillSample('lethal')"></button>
+</div>
  <div id="composer" class="composer">
   <button id="attachbtn" class="iconbtn ghost" onclick="document.getElementById('filein').click()" title="add a text file">＋</button>
   <textarea id="desc" rows="1"></textarea>
@@ -426,6 +558,7 @@ PAGE = """<!DOCTYPE html>
 </main><script>
 const DATA = __DATA__;
 const MASCOT = "__MASCOT__";
+const MASCOT_LOW = "__MASCOT_LOW__";
 let lang = "en";
 let profile = null, verdict = null;
 function t(key){ return (DATA.strings[key] || {})[lang] || (DATA.strings[key] || {})["en"] || ""; }
@@ -455,6 +588,76 @@ function verdictHTML(v, prefix){
   for (const [name,on] of el)
     h += '<span class="elem '+(on?"on":"off")+'">'+(on?"✓ ":"✗ ")+name+"</span>";
   return h + "</div>";
+}
+function updateTrifecta(v) {
+  if (!v || !v.elements) return;
+
+  var panel = document.getElementById("trifectaPanel");
+  var vc1 = document.getElementById("vc1");
+  var vc2 = document.getElementById("vc2");
+  var vc3 = document.getElementById("vc3");
+  var vcenter = document.getElementById("vcenter");
+  var vennHint = document.getElementById("vennHint");
+
+  var traficaWrap = document.getElementById("traficaWrap");
+  var traficaImg = document.getElementById("traficaImg");
+  var traficaBadge = document.getElementById("traficaBadge");
+  var traficaStatus = document.getElementById("traficaStatus");
+
+  if (vc1) vc1.classList.toggle("on", !!v.elements.data_access);
+  if (vc2) vc2.classList.toggle("on", !!v.elements.untrusted_input);
+  if (vc3) vc3.classList.toggle("on", !!v.elements.outbound);
+
+  var count = 0;
+  if (v.elements.data_access) count++;
+  if (v.elements.untrusted_input) count++;
+  if (v.elements.outbound) count++;
+
+  var lethal = count === 3;
+
+  if (vcenter) vcenter.classList.toggle("on", lethal);
+  if (panel) panel.classList.toggle("lethal", lethal);
+  if (vennHint) vennHint.style.display = "none";
+
+  if (traficaWrap) {
+    traficaWrap.classList.remove("st-risky", "st-lethal");
+  }
+
+  if (v.verdict === "Low") {
+    if (traficaImg) traficaImg.src = MASCOT_LOW;
+    if (traficaBadge) traficaBadge.hidden = true;
+  } else if (v.verdict === "Risky") {
+    if (traficaImg) traficaImg.src = MASCOT;
+    if (traficaWrap) traficaWrap.classList.add("st-risky");
+    if (traficaBadge) {
+      traficaBadge.hidden = false;
+      traficaBadge.className = "tbadge risky";
+    }
+  } else if (v.verdict === "Lethal") {
+    if (traficaImg) traficaImg.src = MASCOT;
+    if (traficaWrap) {
+      traficaWrap.classList.add("st-lethal");
+      traficaWrap.classList.remove("shake");
+      void traficaWrap.offsetWidth;
+      traficaWrap.classList.add("shake");
+    }
+    if (traficaBadge) {
+      traficaBadge.hidden = false;
+      traficaBadge.className = "tbadge lethal";
+    }
+  }
+
+  if (traficaStatus) {
+    traficaStatus.textContent = t("verdict_say").replace("{v}", v.verdict);
+  }
+}
+
+function fillSample(kind) {
+  var ta = document.getElementById("desc");
+  if (!ta) return;
+  ta.value = t("sample_" + kind);
+  autogrow();
+  ta.focus();
 }
 async function post(url, body){
   const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
@@ -525,7 +728,7 @@ async function askQuestions(keys){
   try{
     const r = await post("/api/check-profile", {profile});
     think.querySelector(".bubble").innerHTML = verdictHTML(r.verdict, t("verdict_updated"));
-    verdict = r.verdict;
+    verdict = r.verdict; updateTrifecta(verdict);
   }catch(e){ think.querySelector(".bubble").textContent = t("error_prefix") + e.message; }
   return true;
 }
@@ -557,7 +760,7 @@ async function runCheck(url, body, isText){
   try{
     const result = await post(url, body);
     if (my !== runSeq) return;
-    profile = result.profile; verdict = result.verdict;
+    profile = result.profile; verdict = result.verdict; updateTrifecta(verdict);
     think.querySelector(".bubble").innerHTML = verdictHTML(verdict, "");
     if (isText){
       const qs = pickQuestions(result);
@@ -620,6 +823,10 @@ function setLang(l){
   document.getElementById("desc").placeholder = t("placeholder");
   const g = document.getElementById("greeting");
   if (g && !started) g.innerHTML = esc(t("greeting")).replaceAll("\\n", "<br>");
+  // [setLang hook]
+  if (typeof verdict !== "undefined" && verdict && document.getElementById("traficaStatus")) {
+    document.getElementById("traficaStatus").textContent = t("verdict_say").replace("{v}", verdict.verdict);
+  }
   autogrow();
 }
 const SPEECH_LANG = {en: "en-US", ja: "ja-JP", zh: "zh-CN", hi: "hi-IN", es: "es-ES"};
@@ -765,6 +972,7 @@ def page_html() -> bytes:
     data = {"strings": STRINGS, "questions": QUESTIONS}
     html = PAGE.replace("__DATA__", json.dumps(data, ensure_ascii=False))
     html = html.replace("__MASCOT__", _b64_uri("assets/mascot.b64.txt", "image/webp"))
+    html = html.replace("__MASCOT_LOW__", _b64_uri("assets/trafica-low.b64.txt", "image/webp"))
     html = html.replace("__FAVICON__", _b64_uri("assets/favicon.b64.txt", "image/webp"))
     return html.encode("utf-8")
 
